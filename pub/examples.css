@@ -1,0 +1,54 @@
+.statement {
+	width: 75%;
+	margin-left: 12.5%;
+	background-color: #6699cc;
+	padding-bottom: 10px;
+}
+
+.header {
+	min-height: 75px;
+	border: 1px solid white;
+}
+
+.header-row{
+	padding: 15px;
+	height: 25px;
+	text-align: center;
+	font-size: 35px;
+	color: white;
+}
+
+.element-col {
+	float: left;
+	width: 65%;
+}
+
+.val-col {
+	width: 35%;
+}
+
+.row-name {
+	color: white;
+	font-size: 20px;
+	padding: 15px;
+	margin-left: 30px;
+	border: 1px solid white;
+	margin-right: 30px;
+}
+
+.row-value {
+	color: white;
+	font-size: 20px;
+	text-align: right;
+	padding: 15px;
+	margin-left: 30px;
+	border: 1px solid white;
+	margin-right: 30px;
+}
+
+.row-header {
+	color: white;
+	font-size: 25px;
+	padding: 15px;
+	margin-left: 20px;	
+}

@@ -1,0 +1,27 @@
+{
+  "name": "js-library-gabejona",
+  "version": "1.0.0",
+  "description": "alpha release",
+  "main": "examples.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/csc309-fall-2020/js-library-gabejona.git"
+  },
+  "keywords": [
+    "individual",
+    "library"
+  ],
+  "author": "Jonathan Gabe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/csc309-fall-2020/js-library-gabejona/issues"
+  },
+  "homepage": "https://github.com/csc309-fall-2020/js-library-gabejona#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
