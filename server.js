@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, '/pub')))
 // 'root' of our app (i.e. top level domain '/')
 
 app.get('/', (req, res) => {
-	sending a string
+	// sending a string
 	res.send('This should be the root route!')
 
 	sending some HTML
