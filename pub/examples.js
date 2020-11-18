@@ -47,6 +47,14 @@ class balanceSheet extends financialReport{
 		this.equitySize = Object.keys(data["equity"]).length;
 	}
 
+	generateFillableBody(selector, subtotal) {
+		const root = document.querySelector(selector)
+		root.className = 'statement'
+		generateFillableSection(root, this.assetSize, this.assets, "Assets", subtotal)
+		generateFillableSection(root, this.liabilitySize, this.liabilities, "Liabilities", subtotal)
+		generateFillableSection(root, this.equitySize, this.equity, "Equity", subtotal)
+	}
+
 	generateFormBody(selector, subtotal){
 		const root = document.querySelector(selector)
 		root.className = 'statement'
@@ -64,6 +72,14 @@ class incomeStatement extends financialReport{
 		this.expenses = data["expenses"];
 		this.incomeSize = Object.keys(data["income"]).length;
 		this.expenseSize = Object.keys(data["expenses"]).length;
+	}
+
+	generateFillableBody(selector, subtotal) {
+		const root = document.querySelector(selector)
+		root.className = 'statement'
+		generateFillableSection(root, this.incomeSize, this.income, "Income", subtotal)
+		generateFillableSection(root, this.expenseSize, this.expenses, "Expenses", subtotal)
+
 	}
 
 	generateFormBody(selector, subtotal){
@@ -86,6 +102,14 @@ class cashFlowStatement extends financialReport{
 		this.financeSize = Object.keys(data["financing"]).length;
 	}
 
+	generateFillableBody(selector, subtotal) {
+		const root = document.querySelector(selector)
+		root.className = 'statement'
+		generateFillableSection(root, this.operationSize, this.operations, "Expenses", subtotal)
+		generateFillableSection(root, this.investingSize, this.investing, "Investing Cash flow", subtotal)
+		generateFillableSection(root, this.financeSize, this.financing, "Financing Cash flow", subtotal)
+	}
+
 	generateFormBody(selector, subtotal){
 		const root = document.querySelector(selector)
 		root.className = 'statement'
@@ -105,12 +129,100 @@ class equityStatement extends financialReport{
 		this.earnSize = Object.keys(data["earnings"]).length;
 	}
 
+	generateFillableBody(selector, subtotal) {
+		const root = document.querySelector(selector)
+		generateFillableSection(root, this.sharesSize, this.shares, "Shareholdings", subtotal)
+		generateFillableSection(root, this.earnSize, this.earnings, "Retained Earnings", subtotal)		
+	}
+
 	generateFormBody(selector, subtotal){
 		const root = document.querySelector(selector)
 		generateStatementSection(root, this.sharesSize, this.shares, "Shareholdings", subtotal)
 		generateStatementSection(root, this.earnSize, this.earnings, "Retained Earnings", subtotal)
 	}
 }
+
+
+function generateFillableSection(root, size, type, label, subtotal){
+	const tableBody = document.createElement('div')
+	const rowHeader = document.createElement('div')
+	const rowHeaderName = document.createTextNode(label)
+	rowHeader.className = 'row-header'
+	rowHeader.appendChild(rowHeaderName)
+	tableBody.appendChild(rowHeader)
+
+	const elementCol = document.createElement('div')
+	elementCol.className = 'element-col'
+	const valCol = document.createElement('div')
+	valCol.className = 'val-cal'
+
+	for (let i = 0; i < size; i++){
+		let tableRowElement = document.createElement('div')
+		let tableRowKey = Object.keys(type)[i];
+		let tableRowName = document.createTextNode(tableRowKey)
+		tableRowElement.className = 'row-name'
+		tableRowElement.appendChild(tableRowName)
+		elementCol.appendChild(tableRowElement)
+
+		let tableRowElementVal = document.createElement('div')
+		let tableRowInput = document.createElement('input')
+		tableRowInput.setAttribute("value", "")
+		tableRowInput.setAttribute("type", "text")
+		tableRowInput.setAttribute("id", tableRowKey.replace(/ /g,''))
+		let tableRowInputButton = document.createElement('button')
+		tableRowInputButton.onclick = function() {saveInputValue(tableRowKey.replace(/ /g,''))}
+		tableRowInputButton.innerText = 'Save'
+		tableRowInputButton.className = 'input-button'
+		tableRowElementVal.className = 'input-row'
+		tableRowElementVal.appendChild(tableRowInput)
+		tableRowElementVal.appendChild(tableRowInputButton)
+		valCol.appendChild(tableRowElementVal)
+	}
+	if (subtotal){
+		const tableRowSubtotal = document.createElement('div')
+		let tableRowName = document.createTextNode('Total ' + label)
+		tableRowSubtotal.className = 'row-name'
+		tableRowSubtotal.appendChild(tableRowName)
+		elementCol.appendChild(tableRowSubtotal)
+
+		let tableRowSubtotalVal = document.createElement('div')
+		let tableRowInput = document.createElement('input')
+		tableRowInput.setAttribute("value", "")
+		tableRowInput.setAttribute("type", "text")
+		tableRowInput.setAttribute("id", 'Total' + label)
+		let tableRowInputButton = document.createElement('button')
+		tableRowInputButton.onclick = function() {saveInputValue('Total' + label)}
+		tableRowInputButton.innerText = 'Save'
+		tableRowInputButton.className = 'input-button'
+		tableRowSubtotalVal.className = 'input-row'
+		tableRowSubtotalVal.appendChild(tableRowInput)
+		tableRowSubtotalVal.appendChild(tableRowInputButton)
+		valCol.appendChild(tableRowSubtotalVal)	
+	}
+	tableBody.appendChild(elementCol)
+	tableBody.appendChild(valCol)
+	root.appendChild(tableBody)
+}
+
+
+function saveInputValue(key) {
+	const ele = document.querySelector('#' + key)
+	const value = ele.value
+	const rowToAdd = ele.parentElement
+	const buttonToRemove = ele.parentElement.querySelector('button')
+	const inputToRemove = ele.parentElement.querySelector('input')
+
+	rowToAdd.removeChild(buttonToRemove)
+	rowToAdd.removeChild(inputToRemove)
+	rowToAdd.className = 'row-value'
+
+	let tableRowElementVal = document.createElement('div')
+	let tableRowVal = document.createTextNode(value)
+	tableRowElementVal.appendChild(tableRowVal)
+	rowToAdd.appendChild(tableRowElementVal)
+
+}
+
 
 function generateStatementSection(root, size, type, label, subtotal){
 	const tableBody = document.createElement('div')
