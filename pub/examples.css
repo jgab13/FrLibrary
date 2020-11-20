@@ -46,6 +46,16 @@
 	margin-right: 30px;
 }
 
+.edit-value {
+	color: white;
+	font-size: 20px;
+	text-align: right;
+	padding: 15px;
+	margin-left: 30px;
+	border: 1px solid white;
+	margin-right: 30px;
+}
+
 .row-header {
 	color: white;
 	font-size: 25px;
@@ -63,4 +73,9 @@
 
 .input-button {
 	margin-left: 5px;
+}
+
+.edit-button {
+	margin-left: 205px;
+	float: left;
 }
