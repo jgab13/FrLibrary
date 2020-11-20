@@ -346,7 +346,7 @@ function generateStatementSection(root, size, type, label, subtotal, edit){
 			// tableRowInputButton.onclick = function() {saveInputValue(tableRowKey, size, type)}
 			tableRowEditButton.innerText = 'Edit'
 			tableRowEditButton.className = 'edit-button'
-			tableRowEditButton.onclick = function() {editValue(key, size, type)}
+			tableRowEditButton.onclick = function() {editValue(tableRowKey, size, type)}
 			tableRowElementVal.className = 'edit-value'
 			tableRowElementVal.appendChild(tableRowEditButton)				
 		}
