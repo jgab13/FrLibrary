@@ -4,15 +4,45 @@
  	<meta charset="utf-8">
     <title>Examples</title>
     <link rel="stylesheet" type="text/css" href="../fr.css">
-<!-- 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
  	<script type="text/javascript" src="../fr.js"></script>
  	<script type="text/javascript" src="examples.js"></script>
  </head>
- <body>
- 	Welcome to financial statements bitch.
- 	<div id ='test'></div>
-  	<div id ='test2'></div>
- 	
+	 <style>
+		.btn-group button {
+		  background-color: #4CAF50; /* Green background */
+		  border: 1px solid green; /* Green border */
+		  color: white; /* White text */
+		  padding: 10px 24px; /* Some padding */
+		  cursor: pointer; /* Pointer/hand icon */
+		  float: left; /* Float the buttons side by side */
+		  margin-left: 10px;
+		}
 
+		/* Clear floats (clearfix hack) */
+		.btn-group:after {
+		  content: "";
+		  clear: both;
+		  display: table;
+		}
+
+		.btn-group button:not(:last-child) {
+		  border-right: none; /* Prevent double borders */
+		}
+
+		/* Add a background color on hover */
+		.btn-group button:hover {
+		  background-color: #3e8e41;
+		}
+	</style>
+ <body>
+	<div class="btn-group">
+	  <button onClick='createBS()'>Balance Sheet</button>
+	  <button onClick='createIS()'>Income Statement</button>
+	  <button onClick='createCF()'>Cashflow Statetment</button>
+	  <button onClick='createES()'>Equity Statetment</button>
+	</div>
+	<div id='head'></div>
+	<div id='stmt'></div>
+ 	
  </body>
 </html>
