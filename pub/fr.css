@@ -1,33 +1,66 @@
-.statement {
-	width: 75%;
-	margin-left: 12.5%;
-	background-color: #6699cc;
-	padding-bottom: 10px;
-}
-
-.header {
-	min-height: 75px;
+.container.bckgrnd {
+	width: 66%;
+	margin-left: 5%;
+	background-color: #4CAF50;
 	border: 1px solid white;
 }
 
-.header-row{
+.stbck {
+	width: 66%;
+	margin-left: 5%;
+	background-color: white;
+}
+/*
+.container {
+	min-height: 75px;
+	text-align: center;
+}*/
+/*.header-row{
 	padding: 15px;
 	height: 25px;
 	text-align: center;
 	font-size: 35px;
 	color: white;
+}*/
+
+
+.row {
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
-.element-col {
+.row.header {
+	font-size: 35px;
+	color: white;
+	text-align: center;
+}
+
+.row.stmt-header {
+	font-size: 25px;
+	color: #4CAF50;;
+}
+
+.input {
+	width: 90px;
+}
+
+
+.row.stmt {
+	font-size: 20px;
+	/*border: 1px solid #4CAF50;*/
+	color: #4CAF50;
+	/*margin-left: 30px;*/
+}
+/*.element-col {
 	float: left;
 	width: 65%;
 }
 
 .val-col {
 	width: 35%;
-}
+}*/
 
-.row-name {
+/*.row-name {
 	color: white;
 	font-size: 20px;
 	padding: 15px;
@@ -78,4 +111,4 @@
 .edit-button {
 	margin-left: 205px;
 	float: left;
-}
+}*/

@@ -1,10 +1,10 @@
 
-const header1 = {
+const header = {
 	name: "My Company",
 	year: "Dec 31, 2020"
 }
 
-const data = {
+const BSdata = {
 	assets: {
 		"Cash": 100,
 		"Accounts Receivable": 200,
@@ -19,10 +19,9 @@ const data = {
 		"Retained Earnings": 100,
 		"Outstanding Shares": 100
 	}
-
 }
 
-const data2 = {
+const ISdata = {
 	income: {
 		"Income 1": 100,
 		"Income 2": 200,
@@ -33,11 +32,10 @@ const data2 = {
 		"Expense 1": 100,
 		"Expense 2": 100
 	}
-
 }
 
-const myBS = new balanceSheet(header1, data);
-const myIS = new incomeStatement(header1, data2);
+const myBS = new balanceSheet(header, BSdata);
+const myIS = new incomeStatement(header, ISdata);
 
 
 // const bs = document.querySelector('.btn-group')
@@ -54,7 +52,11 @@ function createBS(){
 }
 
 function createIS(){
-
+	myIS.generateHeader('#head', 'Income Statement')
+	myIS.generateFormBody('#stmt', true, true)
+	const footer = document.querySelector('#footer')
+	const text = document.createTextNode('This is the income statement. Click on edit to change the value. Click save to change the value and update the subtotal.')
+	footer.appendChild(text)
 }
 
 function createCF(){

@@ -8,24 +8,34 @@ class financialReport {
 	}
 
 	generateHeader(selector, report){
+		//root selector
+		//create a container
+		//create 3 rows
+		//add id for each row
+		//height, color, font, etc.
 		const root = document.querySelector(selector)
-		root.className = 'statement';
+		//create container
 		const header = document.createElement('div')
-		header.className = 'header';
+		header.className = 'container bckgrnd';
+		// header.setAttribute('id', 'header')
+
 
 		const header_row = document.createElement('div')
 		const reportName = document.createTextNode(this.header.name)
-		header_row.className = 'header-row';
+		// header_row.className = 'header-row';
+		header_row.className = 'row header'
 		header_row.appendChild(reportName)
 
 		const header_row2 = document.createElement('div')
 		const reportTitle = document.createTextNode(report)
-		header_row2.className = 'header-row';
+		// header_row2.className = 'header-row';
+		header_row2.className = 'row header'
 		header_row2.appendChild(reportTitle)
 
 		const header_row3 = document.createElement('div')
 		const reportYear = document.createTextNode(this.header.year)
-		header_row3.className = 'header-row';
+		// header_row3.className = 'header-row';
+		header_row3.className = 'row header'
 		header_row3.appendChild(reportYear)
 
 		header.appendChild(header_row)
@@ -172,6 +182,7 @@ function generateFillableSection(root, size, type, label, subtotal){
 	const rowHeader = document.createElement('div')
 	const rowHeaderName = document.createTextNode(label)
 	rowHeader.className = 'row-header'
+	// tableBody.className = 'container'
 	rowHeader.appendChild(rowHeaderName)
 	tableBody.appendChild(rowHeader)
 
@@ -246,38 +257,45 @@ function editValue(key, size, type) {
 	const ele = document.querySelector('#' + key.replace(/ /g,''))
 	log(ele)
 
-	const child = ele.children[0] //edit button to be removed
-	log(child)
+	const parent = ele.parentElement //This is the row
+	log(parent)
 	
-	const value = parseInt(child.innerText.replace('Edit','')) //value to set as placeholder
-	ele.removeChild(child)
+	const value = parseInt(ele.innerText) //value to set as placeholder
+	ele.innerText = '' //removes innerText of the element - replace this with an input field
+	// ele.removeChild(child)
 	//change ele className to input-row and remove id
-	ele.className = 'input-row'
-	ele.removeAttribute('id')
+	// ele.className = 'input-row'
+	// ele.removeAttribute('id')
 	//append input placeholder = value, set id
 	let tableRowInput = document.createElement('input')
 	tableRowInput.setAttribute("value", "")
 	tableRowInput.setAttribute("placeholder", value)
 	tableRowInput.setAttribute("type", "text")
 	tableRowInput.setAttribute("id", key.replace(/ /g,''))
-	let tableRowInputButton = document.createElement('button')
+	tableRowInput.className = 'input'
+	ele.appendChild(tableRowInput) // this adds the new input into the element div.
+
+	//Now just change the button instead of replacing it
+	const tableRowInputButton = parent.querySelector('button')
 	tableRowInputButton.onclick = function() {saveInputValue(key, size, type)}
 	tableRowInputButton.innerText = 'Save'
-	tableRowInputButton.className = 'input-button'
-	ele.appendChild(tableRowInput)
-	ele.appendChild(tableRowInputButton)
+	// tableRowInputButton.className = 'input-button'
+	// ele.appendChild(tableRowInput)
+	// ele.appendChild(tableRowInputButton)
 	//append button - class input-button, innerText = Save
 
 }
 
 function saveInputValue(key, size, type) {
-	const ele = document.querySelector('#' + key.replace(/ /g,''))
+	const ele = document.querySelector('#' + key.replace(/ /g,'')).querySelector('input')
+	const button = ele.parentElement.parentElement.querySelector('button')
+	log(button)
 	const value = ele.value
 	const placeholder = ele.placeholder
 	log(placeholder)
 	log(ele)
 	log(ele.parentElement)
-	log(ele.parentElement.parentElement)
+	log(ele.parentElement.parentElement.parentElement)
 	log (value)
 	log(value === '')
 	log('this is the type')
@@ -288,108 +306,155 @@ function saveInputValue(key, size, type) {
 	
 	//then modify type to the new value
 	type[key] = parseInt(value === '' ? placeholder : value)
+	log(type[key])
+
 	//then recalculate the subtotal and display it
 	const subtotal = subtotalCalculator(size, type)
+	log(subtotal)
 	//Update subtotal
-	ele.parentElement.parentElement.querySelectorAll("[id^='Total']")[0].innerText = subtotal
+	ele.parentElement.parentElement.parentElement.querySelectorAll("[id^='Total']")[0].innerText = subtotal
 	//then calculate if this violates the assets + equity = liabilities
 	//then display a warning in red if that's the case at the bottom of the total 
-	const totals = document.querySelectorAll("[id^='Total']");
+	// const totals = document.querySelectorAll("[id^='Total']");
 	//this is just for balance sheet - what about the income statement, cash flow statement or equity statement
-	log('Assets are ' + parseInt(totals[0].innerText))
-	log('Liabilities are ' + parseInt(totals[1].innerText))
-	log('Equity is ' + parseInt(totals[2].innerText))
-	const a = parseInt(totals[0].innerText)
-	const b = parseInt(totals[2].innerText)
-	const c = parseInt(totals[1].innerText)
-	log(a)
-	log(b)
-	log(c)
-	log(a - b !== c)
+	// log('Assets are ' + parseInt(totals[0].innerText))
+	// log('Liabilities are ' + parseInt(totals[1].innerText))
+	// log('Equity is ' + parseInt(totals[2].innerText))
+	// const a = parseInt(totals[0].innerText)
+	// const b = parseInt(totals[2].innerText)
+	// const c = parseInt(totals[1].innerText)
+	// log(a)
+	// log(b)
+	// log(c)
+	// log(a - b !== c)
 	
 
 	//Update the row and make changes
-	const rowToAdd = ele.parentElement
-	const buttonToRemove = ele.parentElement.querySelector('button')
-	const inputToRemove = ele.parentElement.querySelector('input')
-
-	rowToAdd.removeChild(buttonToRemove)
-	rowToAdd.removeChild(inputToRemove)
-	rowToAdd.className = 'row-value'
-
-	let tableRowElementVal = document.createElement('div')
+	//replace the row with a div with a value equal to the the new value
+	const parent = ele.parentElement
+	parent.removeChild(ele) //removes the input
 	let tableRowVal = document.createTextNode(value === '' ? placeholder : value)
+	parent.appendChild(tableRowVal)
+
+	// const rowToAdd = ele.parentElement
+	// const buttonToRemove = ele.parentElement.querySelector('button')
+	// const inputToRemove = ele.parentElement.querySelector('input')
+
+	// rowToAdd.removeChild(buttonToRemove)
+	// rowToAdd.removeChild(inputToRemove)
+	// rowToAdd.className = 'row-value'
+
+	// let tableRowElementVal = document.createElement('div')
+	// let tableRowVal = document.createTextNode(value === '' ? placeholder : value)
 	//add an edit button
-	let tableRowEditButton = document.createElement('button')
+	// let tableRowEditButton = document.createElement('button')
 	// tableRowInputButton.onclick = function() {saveInputValue(tableRowKey, size, type)}
-	tableRowEditButton.innerText = 'Edit'
-	tableRowEditButton.onclick = function() {editValue(key, size, type)}
+	// tableRowEditButton.innerText = 'Edit'
+	// tableRowEditButton.onclick = function() {editValue(key, size, type)}
+	button.innerText = 'Edit'
+	button.onclick = function() {editValue(key, size, type)}
 	// tableRowEditButton.className = 'edit-button'
 	// tableRowElementVal.className = 'edit-value'
-	rowToAdd.style.padding = '14.3px'
-	rowToAdd.setAttribute('id', key.replace(/ /g, ''))
-	tableRowElementVal.appendChild(tableRowEditButton)
+	// rowToAdd.style.padding = '14.3px'
+	// rowToAdd.setAttribute('id', key.replace(/ /g, ''))
+	// tableRowElementVal.appendChild(tableRowEditButton)
 
-	tableRowElementVal.appendChild(tableRowVal)
-	rowToAdd.appendChild(tableRowElementVal)
-	if ((a - b) !== c) {
-		alert('Assets must equal Equity + liabilities')
-	}
+	// tableRowElementVal.appendChild(tableRowVal)
+	// rowToAdd.appendChild(tableRowElementVal)
+	// if ((a - b) !== c) {
+	// 	alert('Assets must equal Equity + liabilities')
+	// }
 }
 
 function generateStatementSection(root, size, type, label, subtotal, edit){
+	//this creates the shell container and the label row
 	const tableBody = document.createElement('div')
 	const rowHeader = document.createElement('div')
 	const rowHeaderName = document.createTextNode(label)
-	rowHeader.className = 'row-header'
+	tableBody.className = 'container stbck'
+	// rowHeader.className = 'row-header'
+	rowHeader.className = 'row stmt-header'
 	rowHeader.appendChild(rowHeaderName)
 	tableBody.appendChild(rowHeader)
 
-	const elementCol = document.createElement('div')
-	elementCol.className = 'element-col'
-	const valCol = document.createElement('div')
-	valCol.className = 'val-cal'
+	//Now create a row with two columns for each things - 3 in other cases of a button
+	//and append to the tablebody.
+	// const elementCol = document.createElement('div')
+	// elementCol.className = 'element-col'
+	// const valCol = document.createElement('div')
+	// valCol.className = 'val-cal'
 
 	for (let i = 0; i < size; i++){
-		let tableRowElement = document.createElement('div')
+		//this is the table row - populate everything in here
+		let tableRow = document.createElement('div')
+		tableRow.className = 'row stmt'
+
+		//create the label for the table row (ex. cash)
+		let tableRowlabel = document.createElement('div')
+		tableRowlabel.className = 'col-sm-7'
 		let tableRowKey = Object.keys(type)[i];
 		let tableRowName = document.createTextNode(tableRowKey)
-		tableRowElement.className = 'row-name'
-		tableRowElement.appendChild(tableRowName)
-		elementCol.appendChild(tableRowElement)
+		tableRowlabel.appendChild(tableRowName)
+		//add col to the tableRow
+		tableRow.appendChild(tableRowlabel)
+
+		
+		// tableRow.appendChild(tableRowName)
+		// elementCol.appendChild(tableRowElement)
 
 		//add edit button with a function
+		//create the value of the table row
 		let tableRowElementVal = document.createElement('div')
-		let tableRowVal = document.createTextNode(type[tableRowKey])
-		tableRowElementVal.className = 'row-value'
+		tableRowElementVal.className = 'col-sm-1'
 		tableRowElementVal.setAttribute("id", tableRowKey.replace(/ /g,''))
+		let tableRowVal = document.createTextNode(type[tableRowKey])
 		tableRowElementVal.appendChild(tableRowVal)
+		//add col to the tableRow
+		tableRow.appendChild(tableRowElementVal)
+
+		//Add an edit button
 		if (edit){
+			let tableRowButton = document.createElement('div')
+			tableRowButton.className = 'col-sm-1'
 			let tableRowEditButton = document.createElement('button')
 			// tableRowInputButton.onclick = function() {saveInputValue(tableRowKey, size, type)}
 			tableRowEditButton.innerText = 'Edit'
-			tableRowEditButton.className = 'edit-button'
+			// tableRowEditButton.className = 'edit-button'
+			tableRowEditButton.className = 'btn btn-success'
 			tableRowEditButton.onclick = function() {editValue(tableRowKey, size, type)}
-			tableRowElementVal.className = 'edit-value'
-			tableRowElementVal.appendChild(tableRowEditButton)				
+			// tableRowElementVal.className = 'edit-value'
+			tableRowButton.appendChild(tableRowEditButton)	
+			tableRow.appendChild(tableRowButton)			
 		}
-		valCol.appendChild(tableRowElementVal)
+		// valCol.appendChild(tableRowElementVal)
+		tableBody.appendChild(tableRow)
+
 	}
 	if (subtotal){
 		const tableRowSubtotal = document.createElement('div')
-		let tableRowName = document.createTextNode('Total ' + label)
-		tableRowSubtotal.className = 'row-name'
-		tableRowSubtotal.appendChild(tableRowName)
-		elementCol.appendChild(tableRowSubtotal)
+		tableRowSubtotal.className = 'row stmt'
+		const tableRowSubCol = document.createElement('div')
+		tableRowSubCol.className = 'col-sm-7'
+		const tableRowName = document.createTextNode('Total ' + label)
+		tableRowSubCol.appendChild(tableRowName)
 
-		let tableRowSubtotalVal = document.createElement('div')
-		let tableRowVal = document.createTextNode(subtotalCalculator(size, type))
-		tableRowSubtotalVal.className = 'row-value'
+		// tableRowSubtotal.className = 'row-name'
+		
+		tableRowSubtotal.appendChild(tableRowSubCol)
+		
+
+		const tableRowSubtotalVal = document.createElement('div')
+		tableRowSubtotalVal.className = 'col-sm-1'
+		tableRowSubtotalVal.setAttribute("id", 'Total' + label)
+		const tableRowVal = document.createTextNode(subtotalCalculator(size, type))
+		// tableRowSubtotalVal.className = 'row-value'
 		tableRowSubtotalVal.appendChild(tableRowVal)
-		valCol.appendChild(tableRowSubtotalVal)	
+		tableRowSubtotal.appendChild(tableRowSubtotalVal)	
+
+		tableBody.appendChild(tableRowSubtotal)
 	}
-	tableBody.appendChild(elementCol)
-	tableBody.appendChild(valCol)
+	// tableBody.appendChild(elementCol)
+	// tableBody.appendChild(valCol)
 	root.appendChild(tableBody)
 }
 
