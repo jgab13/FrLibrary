@@ -5,7 +5,7 @@
 	border: 1px solid white;
 }
 
-.stbck {
+.container.stbck {
 	width: 66%;
 	margin-left: 5%;
 	background-color: white;
@@ -29,15 +29,23 @@
 	margin-bottom: 5px;
 }
 
-.row.header {
+.row.head {
+	margin-left: 35%;
 	font-size: 35px;
 	color: white;
-	text-align: center;
 }
 
 .row.stmt-header {
 	font-size: 25px;
-	color: #4CAF50;;
+	color: #4CAF50;
+}
+
+.col-sm-10.individual {
+	margin-left: -15px;
+}
+
+.col-sm-9.individual {
+	margin-left: -15px;
 }
 
 .input {

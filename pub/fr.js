@@ -23,19 +23,19 @@ class financialReport {
 		const header_row = document.createElement('div')
 		const reportName = document.createTextNode(this.header.name)
 		// header_row.className = 'header-row';
-		header_row.className = 'row header'
+		header_row.className = 'row head'
 		header_row.appendChild(reportName)
 
 		const header_row2 = document.createElement('div')
 		const reportTitle = document.createTextNode(report)
 		// header_row2.className = 'header-row';
-		header_row2.className = 'row header'
+		header_row2.className = 'row head'
 		header_row2.appendChild(reportTitle)
 
 		const header_row3 = document.createElement('div')
 		const reportYear = document.createTextNode(this.header.year)
 		// header_row3.className = 'header-row';
-		header_row3.className = 'row header'
+		header_row3.className = 'row head'
 		header_row3.appendChild(reportYear)
 
 		header.appendChild(header_row)
@@ -156,10 +156,10 @@ class equityStatement extends financialReport{
 	constructor(header, data){
 		super(header);
 		this.data = data;
-		this.shares = data["shares"];
-		this.earnings = data["earnings"];
-		this.sharesSize = Object.keys(data["shares"]).length;
-		this.earnSize = Object.keys(data["earnings"]).length;
+		this.activity = data["activity"];
+		this.beg = data["beg"];
+		this.end = data["end"];
+		this.activitySize = Object.keys(data["activity"]).length;
 	}
 
 	generateFillableBody(selector, subtotal) {
@@ -170,11 +170,80 @@ class equityStatement extends financialReport{
 
 	generateFormBody(selector, subtotal, edit){
 		const root = document.querySelector(selector)
-		generateStatementSection(root, this.sharesSize, this.shares, "Shareholdings", subtotal, edit)
-		generateStatementSection(root, this.earnSize, this.earnings, "Retained Earnings", subtotal, edit)
+		generateIndividualRow(root, this.beg, "Beginning Balance", subtotal, edit)
+		generateStatementSection(root, this.activitySize, this.activity, "Current Year Activity", subtotal, edit)
+		generateIndividualRow(root, this.end, "Ending Balance", subtotal, edit)
+		// generateStatementSection(root, this.earnSize, this.earnings, "Retained Earnings", subtotal, edit)
+	}
+
+	addBudgetData(budgetData){
+		updateFormStmtHeader()
+		updateFormBody(this.beg, budgetData["beg"])
+		updateFormBody(this.activity, budgetData["activity"])
+		updateFormBody(this.end, budgetData["end"])
 	}
 }
 
+function updateFormStmtHeader(){
+	const root = document.querySelectorAll('.container.stbck')[0]
+	const row_header = document.createElement('div')
+	row_header.className = 'row stmt'
+
+	const div1 = document.createElement('div')
+	div1.className = 'col-sm-9'
+	
+	const div2 = document.createElement('div')
+	div2.className = 'col-sm-1'
+	div2.appendChild(document.createTextNode('Value'))
+
+	const div3 = document.createElement('div')
+	div3.className = 'col-sm-1'
+	div3.appendChild(document.createTextNode('Budget'))
+
+	const div4 = document.createElement('div')
+	div4.className = 'col-sm-1'
+	div4.appendChild(document.createTextNode('Diff'))
+
+	row_header.appendChild(div1)
+	row_header.appendChild(div2)
+	row_header.appendChild(div3)
+	row_header.appendChild(div4)
+
+	root.insertBefore(row_header, root.childNodes[0])
+}
+
+function updateFormBody(data, budget){
+	const len = Object.keys(budget).length
+	for (let i = 0; i < len; i++){
+		let tableRowKey = Object.keys(budget)[i].replace(/ /g,'')
+		let selector = document.querySelector("#" + tableRowKey)
+		let parent = selector.parentElement
+		let value = parseInt(selector.innerText)
+		let budgetValue = parseInt(budget[Object.keys(budget)[i]])
+		let difference = value - budgetValue
+
+		let budgetDiv = document.createElement('div')
+		budgetDiv.className = 'col-sm-1'
+		budgetDiv.appendChild(document.createTextNode(budgetValue))
+
+		let diffDiv = document.createElement('div')
+		diffDiv.className = 'col-sm-1'
+		diffDiv.appendChild(document.createTextNode(difference))
+
+		parent.childNodes[0].className = parent.childNodes[0].className.includes('individual') ? 'col-sm-9 individual' : 'col-sm-9'
+
+		parent.appendChild(budgetDiv)
+		parent.appendChild(diffDiv)
+
+		log(selector.parentElement.childNodes)
+		log(value)
+		log(difference)
+		log(selector)
+		log(selector.parentElement)
+
+	}
+
+}
 
 //Need to add editable button for fillable part.
 function generateFillableSection(root, size, type, label, subtotal){
@@ -366,6 +435,33 @@ function saveInputValue(key, size, type) {
 	// }
 }
 
+function generateIndividualRow(root, type, label, subtotal, edit){
+	//this creates the shell container and the label row
+	const tableBody = document.createElement('div')
+	const rowHeader = document.createElement('div')
+	tableBody.className = 'container stbck'
+	// rowHeader.className = 'row-header'
+	rowHeader.className = 'row stmt-header'
+	const tableRowKey = Object.keys(type)[0];
+	const tableRowlabel = document.createElement('div')
+	// tableRowlabel.setAttribute("id", tableRowKey.replace(/ /g,''))
+	tableRowlabel.className = 'col-sm-10 individual'
+	const rowHeaderName = document.createTextNode(label)
+	tableRowlabel.appendChild(rowHeaderName)
+	rowHeader.appendChild(tableRowlabel)
+	
+	const tableRowElementVal = document.createElement('div')
+	tableRowElementVal.className = 'col-sm-1'
+	
+	tableRowElementVal.setAttribute("id", tableRowKey.replace(/ /g,''))
+	const tableRowVal = document.createTextNode(type[tableRowKey])
+	tableRowElementVal.appendChild(tableRowVal)
+	rowHeader.appendChild(tableRowElementVal)
+	
+	tableBody.appendChild(rowHeader)
+	root.appendChild(tableBody)
+}
+
 function generateStatementSection(root, size, type, label, subtotal, edit){
 	//this creates the shell container and the label row
 	const tableBody = document.createElement('div')
@@ -391,7 +487,7 @@ function generateStatementSection(root, size, type, label, subtotal, edit){
 
 		//create the label for the table row (ex. cash)
 		let tableRowlabel = document.createElement('div')
-		tableRowlabel.className = 'col-sm-7'
+		tableRowlabel.className = 'col-sm-10'
 		let tableRowKey = Object.keys(type)[i];
 		let tableRowName = document.createTextNode(tableRowKey)
 		tableRowlabel.appendChild(tableRowName)
@@ -434,7 +530,7 @@ function generateStatementSection(root, size, type, label, subtotal, edit){
 		const tableRowSubtotal = document.createElement('div')
 		tableRowSubtotal.className = 'row stmt'
 		const tableRowSubCol = document.createElement('div')
-		tableRowSubCol.className = 'col-sm-7'
+		tableRowSubCol.className = 'col-sm-10'
 		const tableRowName = document.createTextNode('Total ' + label)
 		tableRowSubCol.appendChild(tableRowName)
 

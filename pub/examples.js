@@ -34,8 +34,40 @@ const ISdata = {
 	}
 }
 
+
+const ESdata = {
+	beg: {
+		"Beginning Balance": 500
+	},
+
+	activity: {
+		"Earnings": -1000,
+		"Share issuance": 200,
+		"Loan from shareholder": 100
+	},
+	end: {
+		"Ending Balance": -200
+	} 
+}
+
+const ESbudget = {
+	beg: {
+		"Beginning Balance": 300
+	},
+
+	activity: {
+		"Earnings": -800,
+		"Share issuance": 150,
+		"Loan from shareholder": 75
+	},
+	end: {
+		"Ending Balance": -225
+	} 
+}
+
 const myBS = new balanceSheet(header, BSdata);
 const myIS = new incomeStatement(header, ISdata);
+const myES = new equityStatement(header, ESdata);
 
 
 // const bs = document.querySelector('.btn-group')
@@ -64,5 +96,7 @@ function createCF(){
 }
 
 function createES(){
-	
+	myES.generateHeader('#head', 'Statement of Equity')
+	myES.generateFormBody('#stmt', false, false)
+	myES.addBudgetData(ESbudget)
 }
