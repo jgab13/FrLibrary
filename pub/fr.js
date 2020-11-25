@@ -194,7 +194,7 @@ function updateFormStmtHeader(){
 	
 	const div2 = document.createElement('div')
 	div2.className = 'col-sm-1'
-	div2.appendChild(document.createTextNode('Value'))
+	div2.appendChild(document.createTextNode('Actual'))
 
 	const div3 = document.createElement('div')
 	div3.className = 'col-sm-1'

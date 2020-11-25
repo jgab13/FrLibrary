@@ -99,4 +99,7 @@ function createES(){
 	myES.generateHeader('#head', 'Statement of Equity')
 	myES.generateFormBody('#stmt', false, false)
 	myES.addBudgetData(ESbudget)
+	const footer = document.querySelector('#footer')
+	const text = document.createTextNode('This is the statement of equity. The edit feature is not enabled. Additional budgeted data was added to this report. The difference between budget and actual was computed automatically.')
+	footer.appendChild(text)
 }
