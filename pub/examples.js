@@ -35,6 +35,22 @@ const ISdata = {
 }
 
 
+const CFdata = {
+	operations: {
+		"Net income": 1000,
+		"Depreciation": 5000,
+		"Loss on sale": -360
+	},
+	investing: {
+		"Capex": 5500,
+		"Losses": -3700
+	},
+	financing: {
+		"Debt payments": -7500,
+		"Share issuance": 5000
+	}
+}
+
 const ESdata = {
 	beg: {
 		"Beginning Balance": 500
@@ -65,9 +81,18 @@ const ESbudget = {
 	} 
 }
 
+const addCash = {
+	Cash: {
+		"Deposits": 50,
+		"Cash Equivalents": 25,
+		"Treasury Bills": 25
+	}
+}
+
 const myBS = new balanceSheet(header, BSdata);
 const myIS = new incomeStatement(header, ISdata);
 const myES = new equityStatement(header, ESdata);
+const myCF = new cashFlowStatement(header, CFdata);
 
 
 // const bs = document.querySelector('.btn-group')
@@ -77,10 +102,12 @@ const myES = new equityStatement(header, ESdata);
 
 
 function createBS(){
-
 	myBS.generateHeader('#head', 'Balance Sheet')
-	log(myBS)
-	myBS.generateFillableBody('#stmt', true)
+	myBS.generateFormBody('#stmt', true)
+	myBS.lineItemDetail(addCash, "Cash")
+	const footer = document.querySelector('#footer')
+	const text = document.createTextNode('This is the balance statement. This form cannot be editted and is not fillable. The cash row can be collapsed and expanded to see additional cash details')
+	footer.appendChild(text)
 }
 
 function createIS(){
@@ -92,7 +119,11 @@ function createIS(){
 }
 
 function createCF(){
-
+	myCF.generateHeader('#head', 'Cashflow Statement')
+	myCF.generateFillableBody('#stmt', true)
+	const footer = document.querySelector('#footer')
+	const text = document.createTextNode('This is the cash flow statement. This is a default fillable form with the current value as placeholders. Click on edit to change the value. Click save to change the value and update the subtotal.')
+	footer.appendChild(text)
 }
 
 function createES(){

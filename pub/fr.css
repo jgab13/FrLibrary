@@ -1,14 +1,19 @@
+
+
 .container.bckgrnd {
-	width: 66%;
-	margin-left: 5%;
+	
 	background-color: #4CAF50;
 	border: 1px solid white;
 }
 
 .container.stbck {
-	width: 66%;
-	margin-left: 5%;
+/*	width: 66%;
+	margin-left: 5%;*/
 	background-color: white;
+}
+
+.container.sub {
+	margin-left: -15px;
 }
 /*
 .container {
