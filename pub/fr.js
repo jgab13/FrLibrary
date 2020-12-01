@@ -2,6 +2,10 @@
 'use strict';
 const log = console.log
 
+//Requirements for today:
+//	validation for each report
+//	totalling
+
 class financialReport {
 	constructor(header){
 		this.header = header
@@ -48,6 +52,7 @@ class financialReport {
 class balanceSheet extends financialReport{
 	constructor(header, data){
 		super(header);
+		this.type = 'bs' //used to flag
 		this.data = data;
 		this.assets = data["assets"];
 		this.liabilities = data["liabilities"];
@@ -63,14 +68,23 @@ class balanceSheet extends financialReport{
 		generateFillableSection(root, this.assetSize, this.assets, "Assets", subtotal)
 		generateFillableSection(root, this.liabilitySize, this.liabilities, "Liabilities", subtotal)
 		generateFillableSection(root, this.equitySize, this.equity, "Equity", subtotal)
+		if (subtotal) {
+			generateTotal(root, "Total Libailities and Equity", calculateTotal(this.type))
+			validateTotal(subtotal, this.type)
+		}
 	}
 
-	generateFormBody(selector, subtotal, edit){
+	generateFormBody(selector, subtotal, edit, total){
 		const root = document.querySelector(selector)
 		root.className = 'statement'
-		generateStatementSection(root, this.assetSize, this.assets, "Assets", subtotal, edit)
-		generateStatementSection(root, this.liabilitySize, this.liabilities, "Liabilities", subtotal, edit)
-		generateStatementSection(root, this.equitySize, this.equity, "Equity", subtotal, edit)
+		generateStatementSection(root, this.assetSize, this.assets, "Assets", subtotal, edit, total)
+		generateStatementSection(root, this.liabilitySize, this.liabilities, "Liabilities", subtotal, edit, total)
+		generateStatementSection(root, this.equitySize, this.equity, "Equity", subtotal, edit, total)
+		if (subtotal) {
+			generateTotal(root, "Total Libailities and Equity", calculateTotal(this.type))
+			validateTotal(subtotal, this.type)
+
+		}
 	}
 
 	lineItemDetail(data, label){
@@ -82,6 +96,7 @@ class balanceSheet extends financialReport{
 class incomeStatement extends financialReport{
 	constructor(header, data){
 		super(header);
+		this.type = 'is' //used to flag
 		this.data = data;
 		this.income = data["income"];
 		this.expenses = data["expenses"];
@@ -94,7 +109,11 @@ class incomeStatement extends financialReport{
 		root.className = 'statement'
 		generateFillableSection(root, this.incomeSize, this.income, "Income", subtotal)
 		generateFillableSection(root, this.expenseSize, this.expenses, "Expenses", subtotal)
-
+		//generateIndividualRow(root, this.beg, "Net Income", subtotal, true)
+		if (subtotal) {
+			generateTotal(root, "Net Income", calculateTotal(this.type))
+			validateTotal(subtotal, this.type)
+		}
 	}
 
 	generateFormBody(selector, subtotal, edit){
@@ -102,16 +121,23 @@ class incomeStatement extends financialReport{
 		root.className = 'statement'
 		generateStatementSection(root, this.incomeSize, this.income, "Income", subtotal, edit)
 		generateStatementSection(root, this.expenseSize, this.expenses, "Expenses", subtotal, edit)
+		if (subtotal) {
+			generateTotal(root, "Net Income", calculateTotal(this.type))
+			validateTotal(subtotal, this.type)
+		}
 	}
 }
 
 class cashFlowStatement extends financialReport{
 	constructor(header, data){
 		super(header);
+		this.type = 'cf' //used to flag
 		this.data = data;
 		this.operations = data["operations"];
 		this.investing = data["investing"];
 		this.financing = data["financing"];
+		this.beg = data["beg"];
+		this.end = data["end"];
 		this.operationSize = Object.keys(data["operations"]).length;
 		this.investSize = Object.keys(data["investing"]).length;
 		this.financeSize = Object.keys(data["financing"]).length;
@@ -120,23 +146,30 @@ class cashFlowStatement extends financialReport{
 	generateFillableBody(selector, subtotal) {
 		const root = document.querySelector(selector)
 		root.className = 'statement'
+		generateIndividualRow(root, this.beg, "Beginning Balance", subtotal, true)
 		generateFillableSection(root, this.operationSize, this.operations, "Operating Cash flow", subtotal, true)
 		generateFillableSection(root, this.investSize, this.investing, "Investing Cash flow", subtotal, true)
 		generateFillableSection(root, this.financeSize, this.financing, "Financing Cash flow", subtotal, true)
+		generateIndividualRow(root, this.end, "Ending Balance", subtotal, true)
+		validateTotal(subtotal, this.type)
 	}
 
 	generateFormBody(selector, subtotal, edit){
 		const root = document.querySelector(selector)
 		root.className = 'statement'
+		generateIndividualRow(root, this.beg, "Beginning Balance", subtotal, edit)
 		generateStatementSection(root, this.operationSize, this.operations, "Operating Cash flow", subtotal, edit)
 		generateStatementSection(root, this.investingSize, this.investing, "Investing Cash flow", subtotal, edit)
 		generateStatementSection(root, this.financeSize, this.financing, "Financing Cash flow", subtotal, edit)
+		generateIndividualRow(root, this.end, "Ending Balance", subtotal, edit)
+		validateTotal(subtotal, this.type)
 	}
 }
 
 class equityStatement extends financialReport{
 	constructor(header, data){
 		super(header);
+		this.type = 'es' //used to flag
 		this.data = data;
 		this.activity = data["activity"];
 		this.beg = data["beg"];
@@ -146,8 +179,11 @@ class equityStatement extends financialReport{
 
 	generateFillableBody(selector, subtotal) {
 		const root = document.querySelector(selector)
-		generateFillableSection(root, this.sharesSize, this.shares, "Shareholdings", subtotal)
-		generateFillableSection(root, this.earnSize, this.earnings, "Retained Earnings", subtotal)		
+		generateIndividualRow(root, this.beg, "Beginning Balance", subtotal, true)
+		generateFillableSection(root, this.activitySize, this.activity, "Current Year Activity", subtotal)
+		generateIndividualRow(root, this.end, "Ending Balance", subtotal, true)
+		validateTotal(subtotal, this.type)
+
 	}
 
 	generateFormBody(selector, subtotal, edit){
@@ -155,6 +191,7 @@ class equityStatement extends financialReport{
 		generateIndividualRow(root, this.beg, "Beginning Balance", subtotal, edit)
 		generateStatementSection(root, this.activitySize, this.activity, "Current Year Activity", subtotal, edit)
 		generateIndividualRow(root, this.end, "Ending Balance", subtotal, edit)
+		validateTotal(subtotal, this.type)
 		// generateStatementSection(root, this.earnSize, this.earnings, "Retained Earnings", subtotal, edit)
 	}
 
@@ -509,7 +546,7 @@ function generateFillableSection(root, size, type, label, subtotal, flag){
 
 		const tableRowSubtotalVal = document.createElement('div')
 		tableRowSubtotalVal.className = 'col-sm-1'
-		tableRowSubtotalVal.setAttribute("id", 'Total' + label)
+		tableRowSubtotalVal.setAttribute("id", 'Total' + label.replace(/ /g,''))
 		const tableRowVal = document.createTextNode(subtotalCalculator(size, type))
 		// tableRowSubtotalVal.className = 'row-value'
 		tableRowSubtotalVal.appendChild(tableRowVal)
@@ -535,7 +572,7 @@ function generateFillableSection(root, size, type, label, subtotal, flag){
 	root.appendChild(tableBody)
 }
 
-function editValue(key, size, type) {
+function editValue(key, size, type, flag) {
 	//need an input box, save button, placeholder should be the existing value
 	log(key)
 	log(size)
@@ -563,7 +600,7 @@ function editValue(key, size, type) {
 
 	//Now just change the button instead of replacing it
 	const tableRowInputButton = parent.querySelector('button')
-	tableRowInputButton.onclick = function() {saveInputValue(key, size, type)}
+	tableRowInputButton.onclick = function() {saveInputValue(key, size, type, flag)}
 	tableRowInputButton.innerText = 'Save'
 	// tableRowInputButton.className = 'input-button'
 	// ele.appendChild(tableRowInput)
@@ -621,12 +658,14 @@ function saveInputValue(key, size, type, flag) {
 	//Update the row and make changes
 	//replace the row with a div with a value equal to the the new value
 	const parent = ele.parentElement
+	log(parent)
 	parent.removeChild(ele) //removes the input
 	let tableRowVal = document.createTextNode(value === '' ? placeholder : value)
 	parent.appendChild(tableRowVal)
-	if (flag){
-		parent.setAttribute('id', key.replace(/ /g, ''))	
-	}
+	// if (flag){
+	// 	log('The flag value has been select.')
+	// 	parent.setAttribute('id', key.replace(/ /g, ''))	
+	// }
 	
 
 	// const rowToAdd = ele.parentElement
@@ -657,6 +696,32 @@ function saveInputValue(key, size, type, flag) {
 	// if ((a - b) !== c) {
 	// 	alert('Assets must equal Equity + liabilities')
 	// }
+}
+
+function generateTotal(root, label, value){
+	//this creates the shell container and the label row
+	const tableBody = document.createElement('div')
+	const rowHeader = document.createElement('div')
+	tableBody.className = 'container stbck'
+	// rowHeader.className = 'row-header'
+	rowHeader.className = 'row stmt-header'
+	const tableRowlabel = document.createElement('div')
+	// tableRowlabel.setAttribute("id", tableRowKey.replace(/ /g,''))
+	tableRowlabel.className = 'col-sm-10 individual'
+	const rowHeaderName = document.createTextNode(label)
+	tableRowlabel.appendChild(rowHeaderName)
+	rowHeader.appendChild(tableRowlabel)
+	
+	const tableRowElementVal = document.createElement('div')
+	tableRowElementVal.className = 'col-sm-1'
+	
+	tableRowElementVal.setAttribute("id", label.replace(/ /g,''))
+	const tableRowVal = document.createTextNode(value)
+	tableRowElementVal.appendChild(tableRowVal)
+	rowHeader.appendChild(tableRowElementVal)
+	
+	tableBody.appendChild(rowHeader)
+	root.appendChild(tableBody)
 }
 
 function generateIndividualRow(root, type, label, subtotal, edit){
@@ -706,3 +771,82 @@ function validateSubtotal(size, type, subtotalValue){
 	}
 	return subtotalValue === total
 }
+
+//Balance sheet and Income statement totals
+function calculateTotal(flag){
+	if (flag === 'bs'){
+		const liabs = parseInt(document.querySelector('#TotalLiabilities').innerText)
+		const equity = parseInt(document.querySelector('#TotalEquity').innerText)
+		return liabs + equity
+
+	} else if (flag === 'is'){
+		const income = parseInt(document.querySelector('#TotalIncome').innerText)
+		const expense = parseInt(document.querySelector('#TotalExpenses').innerText)
+		return (income - expense)
+	} 	
+}
+
+//not sure if this is necessary
+function validateTotal(total, flag){
+	if (total){
+		if (flag === 'bs'){
+			const assets = parseInt(document.querySelector('#TotalAssets').innerText)
+			const liabs = parseInt(document.querySelector('#TotalLiabilities').innerText)
+			const equity = parseInt(document.querySelector('#TotalEquity').innerText)
+
+			if ((liabs + equity) !== assets){
+				alert('Liabilities and equity do not add to assets. Invalid subtotals')
+			}
+			return
+
+		} else if (flag === 'is'){
+			const income = parseInt(document.querySelector('#TotalIncome').innerText)
+			const expense = parseInt(document.querySelector('#TotalExpenses').innerText)
+			const net = parseInt(document.querySelector('#NetIncome').innerText)
+			if ((income - expense) !== net) {
+				alert('Net income does not equal income subtract expenses. Invalid subtotals')
+			}
+			return
+
+		} else if (flag === 'cf') {
+			log('Here is the cash flow')
+			const beg = parseInt(document.querySelector('#BeginningBalance').innerText)
+			log(beg)
+			const ocf = parseInt(document.querySelector('#TotalOperatingCashflow').innerText)
+			const icf = parseInt(document.querySelector('#TotalInvestingCashflow').innerText)
+			const fcf = parseInt(document.querySelector('#TotalFinancingCashflow').innerText)
+			const end = parseInt(document.querySelector('#EndingBalance').innerText)
+			if ((beg + ocf + icf + fcf) !== end) {
+				alert('The cash flow statement does not balance. Beginning balance + total activity should equal ending balance.')
+			}
+			return
+
+		} else {
+			const beg = parseInt(document.querySelector('#BeginningBalance').innerText)
+			const activity = parseInt(document.querySelector('#TotalCurrentYearActivity').innerText)
+			const end = parseInt(document.querySelector('#EndingBalance').innerText)
+			if ((beg + activty) !== end) {
+				alert('The equity statement does not balance. Beginning balance plus activitiy should equal the ending balance')
+			}
+			return
+
+		}	
+	} else {
+		alert('Validation cannot be done since totalling not selected')
+		return
+	}
+}
+
+//Requirements for totalling
+//Balance sheet - add Total Liabilities + Equity
+//if Liabilities + Equity !== Total Assets - show a red error message that these two do not equal
+
+//Income statement - Net income
+//if Income - expenses !== Net income
+
+//Cash flow statement Beginning Balance
+//Ending Balance
+//if Beginning, totals !=== Ending Balance
+
+//Equity statement
+//subtotal + beg !== ending

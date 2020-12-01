@@ -36,6 +36,9 @@ const ISdata = {
 
 
 const CFdata = {
+	beg: {
+		"Beginning Balance": 500
+	},
 	operations: {
 		"Net income": 1000,
 		"Depreciation": 5000,
@@ -48,7 +51,10 @@ const CFdata = {
 	financing: {
 		"Debt payments": -7500,
 		"Share issuance": 5000
-	}
+	},
+	end: {
+		"Ending Balance": -200
+	} 
 }
 
 const ESdata = {
