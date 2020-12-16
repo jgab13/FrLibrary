@@ -1,4 +1,51 @@
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+th, td {
+	padding: 15px;
+	text-align: left;
+}
+table {
+	width: 70%;
+}
 
+.header{
+	text-align: center;
+	font-size: 25px;
+}
+.label{
+	width: 65%;
+}
+
+.value{
+	width: 25%;
+	text-align: right;
+}
+.currSign:before { 
+    content: '$'; 
+}
+.subheader {
+	font-size: 20px;
+}
+
+.hidden {
+	display: none;
+}
+
+#drag.hint {
+		background: #fea;
+}
+#drag.active {
+		background: #ffd4d4;
+}
+
+.subheader button {
+	float: right;
+}
+
+
+/*
 
 .container.bckgrnd {
 	width: 66%;
@@ -126,3 +173,4 @@
 	margin-left: 205px;
 	float: left;
 }*/
+*/
