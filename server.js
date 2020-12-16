@@ -23,10 +23,8 @@ app.use(express.static(path.join(__dirname, '/pub')))
 
 app.get('/', (req, res) => {
 	// sending a string
-	res.send('Go to /examples.html for demo')
-
 	// sending some HTML
-	res.send('<h1>This should be the root route!</h1>')
+	res.send('<h2>Go to /examples.html for a demo of the library</h2><br><h2>Or go to /documentation.html for an explanation of the library</h2>')
 })
 
 // Error codes
