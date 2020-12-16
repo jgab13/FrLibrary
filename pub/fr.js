@@ -1,5 +1,13 @@
 /* FR Library*/
 
+//Need an fr object
+//this object will contain the data
+//operations
+//additional components -an array of subcomponents
+//add functions that generate statement and do validation, etc
+//other functionality - HAS TO BE DONE ON THURSDAY
+
+
 function total(tblselect, label, operations, budget){
 	const table = document.querySelector('#' + tblselect)
 	const row = document.createElement('tr')
@@ -8,7 +16,6 @@ function total(tblselect, label, operations, budget){
 	rowLabel.className = 'label'
 	row.appendChild(rowLabel)
 
-	
 	const oplen = Object.keys(operations).length
 	console.log(oplen)
 	let total = 0
@@ -86,9 +93,7 @@ function header(data, table, span) {
    }
 }
 
-
-
-function budgetHeader(table, span){
+function budgetHeader(table){
 	const tr = document.createElement('tr')
 	const td = document.createElement('td')
 	td.className = 'subheader actual'
@@ -128,7 +133,7 @@ function budgetHeader(table, span){
 }
 
 //data[label], budget[label] label, sub, table, 5
-function sectionBudget(data, budget, label, sub, table, span){
+function sectionBudget(data, budget, label, sub, table, span, edit){
 	const tr = document.createElement('tr')
 	const td = document.createElement('td')
 	td.className = "subheader " + label
@@ -158,23 +163,71 @@ function sectionBudget(data, budget, label, sub, table, span){
 		let sublabel = Object.keys(data)[i]
 		tdlabel.innerText = sublabel
 
+		//need an edit and input
 		//actual value for row
 		const tdvalue = document.createElement('td')
-		tdvalue.className = "value " + label
-		tdvalue.setAttribute('id', sublabel.replace(/ /g, '') + table.getAttribute('id'))
+		
+		const identifier = sublabel.replace(/ /g, '') + table.getAttribute('id')
+		tdvalue.setAttribute('id', identifier)
 		let value = data[sublabel]
-		tdvalue.innerText = value
-		//track subtotal
 		subactual += value
+		if (edit){
+			tdvalue.className = "value " + label + ' edit'
+	      	const save = document.createElement('button')
+	      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
+	      	// save.setAttribute('id', buttonlabel)
+	      	save.style.float = 'left'
+	      	save.onclick = function () {saveValue(identifier);}
+	      	save.innerText = 'Save'
+	      	save.setAttribute("id", "editbutton")
+	      	tdvalue.appendChild(save)
 
+	      	const inp = document.createElement('input')
+	      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
+	      	// inp.setAttribute('id', inplabel)
+	      	inp.setAttribute("placeholder", value)
+	      	inp.setAttribute("type", "text")
+	 
+	      	console.log(inp)
+	      	tdvalue.appendChild(inp)
+	      	console.log(tdvalue)
+
+		} else {
+			tdvalue.className = "value " + label
+			tdvalue.innerText = value
+		}
+
+		//need an edit and input
 		//budget value for row
 		const tdbudget = document.createElement('td')
-		tdbudget.className = "value " + label + " budget"
-		tdbudget.setAttribute('id', sublabel.replace(/ /g, '') +"budget" + table.getAttribute('id'))
+		
+		const budgetID = sublabel.replace(/ /g, '') + "budget" + table.getAttribute('id')
+		tdbudget.setAttribute('id', budgetID)
 		let budg = budget[sublabel]
-		tdbudget.innerText = budg
-		//track subtotal
 		subbudget += budg
+		if (edit){
+			tdbudget.className = "value " + label + ' edit'
+	      	const saveBudg = document.createElement('button')
+	      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
+	      	// save.setAttribute('id', buttonlabel)
+	      	saveBudg.style.float = 'left'
+	      	saveBudg.onclick = function () {saveValue(budgetID);}
+	      	saveBudg.innerText = 'Save'
+	      	saveBudg.setAttribute("id", "editbutton")
+	      	tdbudget.appendChild(saveBudg)
+
+	      	const input = document.createElement('input')
+	      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
+	      	// inp.setAttribute('id', inplabel)
+	      	input.setAttribute("placeholder", subbudget)
+	      	input.setAttribute("type", "text")
+	      	tdbudget.appendChild(input)
+
+		} else {
+			tdbudget.className = "value " + label + " budget"
+			tdbudget.innerText = budg
+		}
+
 
 		//diff value for row
 		const tddiff = document.createElement('td')
@@ -188,6 +241,8 @@ function sectionBudget(data, budget, label, sub, table, span){
 		tdperc.className = "value " + label + " budget"
 		tdperc.setAttribute('id', sublabel.replace(/ /g, '')+ "budgetdiff" + table.getAttribute('id'))
 		let diffperc = diff / budg
+		console.log("this si the diffperc")
+		console.log(diffperc)
 		tdperc.innerText = diffperc
 
 		//append to end of row
@@ -233,7 +288,7 @@ function sectionBudget(data, budget, label, sub, table, span){
    }
 }
 
-function section(data, label, sub, table, span){
+function section(data, label, sub, table, span, edit){
    //Create the subheader label
    const tr = document.createElement('tr')
    const td = document.createElement('td')
@@ -269,17 +324,41 @@ function section(data, label, sub, table, span){
 
       //value for row
       const tdvalue = document.createElement('td')
-      tdvalue.className = "value " + label
-      tdvalue.setAttribute('id', sublabel.replace(/ /g, '') + table.getAttribute('id'))
-      let value = data[sublabel]
-      tdvalue.innerText = value
-      //track subtotal
-      subtotal += value
-      console.log(sublabel)
-      console.log(data[sublabel])
-      console.log("this is the subtotal")
-      console.log(subtotal)
-      
+      const identifier = sublabel.replace(/ /g, '') + table.getAttribute('id')
+	  tdvalue.setAttribute('id', identifier)
+	  let value = data[sublabel]
+	  subtotal += value
+      if (edit === undefined){
+	      tdvalue.innerText = value
+	      tdvalue.className = "value " + label
+	      //track subtotal
+	      // console.log('I am here')
+	      
+      } else { 
+      	//save button
+      	// console.log('No, I am here')
+      	tdvalue.className = "value " + label + ' edit'
+      	const save = document.createElement('button')
+      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
+      	// save.setAttribute('id', buttonlabel)
+      	save.style.float = 'left'
+      	save.onclick = function () {saveValue(identifier);}
+      	save.innerText = 'Save'
+      	save.setAttribute("id", "editbutton")
+      	console.log(save)
+      	tdvalue.appendChild(save)
+      	console.log(tdvalue)
+
+      	const inp = document.createElement('input')
+      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
+      	// inp.setAttribute('id', inplabel)
+      	inp.setAttribute("placeholder", value)
+      	inp.setAttribute("type", "text")
+ 
+      	console.log(inp)
+      	tdvalue.appendChild(inp)
+      	console.log(tdvalue)
+      	}
       //append to end of row
       tbrow.appendChild(tdlabel)
       tbrow.appendChild(tdvalue)
@@ -311,45 +390,25 @@ function statementGenerator(data, id, sub, budget, edit){
 	//header components
 	console.log("this is the budget argument")
 	console.log(budget)
-	if (edit === undefined){
-		if (budget === undefined){
-			header(data, table, 2)	
-		} else {
-			header(data, table, 5)
-			budgetHeader(table, 5)
-		}	
+	if (budget === undefined || budget === null){
+		header(data, table, 2)	
 	} else {
-		if (budget === undefined){
-			header(data, table, 3)	
-		} else {
-			header(data, table, 7)
-			budgetHeader(table, 7)
-		}
+		header(data, table, 5)
+		budgetHeader(table)
 	}
 	
 	const sections = Object.keys(data).length
 	//for each subcomponent
 	for (let j = 1; j < sections; j++){
       let label = Object.keys(data)[j]
-      if (edit === undefined){
-	      if (budget === undefined){
-	      	section(data[label], label, sub, table, 2)	
-	      } else {
-	      	sectionBudget(data[label], budget[label], label, sub, table, 5)
-	      }	
+      if (budget === undefined || budget === null){
+      	section(data[label], label, sub, table, 2, edit)	
       } else {
-      	if (budget === undefined){
-	      	sectionEdit(data[label], label, sub, table, 3)	
-	      } else {
-	      	sectionBudgetEdit(data[label], budget[label], label, sub, table, 7)
-	      }
-      }
+      	sectionBudget(data[label], budget[label], label, sub, table, 5, edit)
+      }	 
 	}
 	return table
 }
-
-
-
 
 function collapseBudget () {
    	console.log("button clicked - hide")
@@ -408,10 +467,13 @@ function formatValues () {
 	let x = document.querySelectorAll(".value");
 	let len = x.length; 
     for (let i = 0; i < len; i++) { 
-        let num = Number(x[i].innerHTML) 
-                  .toLocaleString('en'); 
-        x[i].innerHTML = num; 
-        x[i].classList.add("currSign"); 
+    	if (!x[i].className.includes('edit')){
+	        let num = Number(x[i].innerHTML) 
+	                  .toLocaleString('en'); 
+	        x[i].innerHTML = num; 
+	        x[i].classList.add("currSign");    		
+    	}
+ 
  	}
  }
 
@@ -465,7 +527,10 @@ function checkLinkedValues(label, message){
 			val = parseFloat(diffsToCheck[i].innerHTML)
 			console.log(val)
 		} else {
-			if (parseFloat(diffsToCheck[i].innerHTML) !== val) {
+			if (!diffsToCheck[i].getAttribute('id').includes('diff') && 
+				!diffsToCheck[i].getAttribute('id').includes('budget') &&
+				!diffsToCheck[i].getAttribute('id').includes('button') &&
+				parseFloat(diffsToCheck[i].innerHTML) !== val) {
 				condition = true
 				break;
 			} 
@@ -473,21 +538,38 @@ function checkLinkedValues(label, message){
 	}
 	if (condition){
 		for (let j = 0; j < diffsToCheck.length; j++){
-			if (!diffsToCheck[j].getAttribute('id').includes('diff') && !diffsToCheck[j].getAttribute('id').includes('budget')){
+			if (!diffsToCheck[j].getAttribute('id').includes('diff') && 
+				!diffsToCheck[j].getAttribute('id').includes('budget') &&
+				!diffsToCheck[j].getAttribute('id').includes('button')){
 				let parent = diffsToCheck[j].parentElement
 				console.log(parent)
-				let container = document.createElement('div')
-				container.style.color = 'red'
-				container.style.float = 'right'
-				let stmt = document.createTextNode(message)
-				container.append(stmt)
-				parent.querySelector('.label').append(container)	
+				if (parent.querySelector('div') === null && !(parent.querySelector('a') === null)){
+					let container = document.createElement('div')
+					container.style.color = 'red'
+					container.style.float = 'right'
+					let stmt = document.createTextNode(message)
+					container.append(stmt)
+					parent.querySelector('.label').append(container)	
+				}			
 			}
 		}	
 	}
+	else {
+		for (let m = 0; m < diffsToCheck.length; m++){
+			if (!diffsToCheck[m].getAttribute('id').includes('diff') && 
+				!diffsToCheck[m].getAttribute('id').includes('budget') &&
+				!diffsToCheck[m].getAttribute('id').includes('button')){
+				let parent = diffsToCheck[m].parentElement
+				if (parent.querySelector('div') !== null){
+					console.log('div exists')
+					const div = parent.querySelector('div')
+					console.log(div)
+					parent.querySelector('.label').removeChild(div)
+				} 				
+			}
+		}
+	}
 }
-
-
 
 let index = 0
 function nextSlide (key) {
@@ -500,8 +582,6 @@ function nextSlide (key) {
 	index = index % slides.length
 	console.log(index)
 	slides[index].style.removeProperty('display')
-	
-	
 }
 
 function prevSlide (key) {
@@ -513,8 +593,7 @@ function prevSlide (key) {
 	index--;
 	index = index < 0 ? slides.length - 1 : index % slides.length
 	console.log(index)
-	slides[index].style.removeProperty('display')
-	
+	slides[index].style.removeProperty('display')	
 }
 
 function createAutomaticSlideShow(root, selector, slides, speed){
@@ -585,7 +664,7 @@ function addSubComponents(data, label, cat, table){
 	const root = document.querySelector('#' + label.replace(/ /g, '') + table.getAttribute('id'))
 	const collapseButton = document.createElement('button')
 	collapseButton.style.float = 'right'
-	const buttonlabel =  label.replace(/ /g, '')
+	const buttonlabel =  label.replace(/ /g, '') + "sub"
 	collapseButton.setAttribute('id', buttonlabel)
 	collapseButton.onclick = function() {collapseRows(buttonlabel, label.replace(/ /g, ''));}
 	collapseButton.innerText = 'Hide'
@@ -632,8 +711,111 @@ function draganddrop(label){
 	});	
 }
 
-
-
 function insertAfter(sibling, element) {
   sibling.parentElement.insertBefore(element, sibling.nextSibling);
+}
+
+function saveValue(key){
+	console.log('this is the key for saveValue')
+	console.log(key)
+	const parent = document.querySelector('#' + key)
+	// console.log("this is the parent")
+	console.log(parent)
+	const save = parent.querySelector('#editbutton')
+	// console.log("this is the button")
+	console.log(save)
+	const input = parent.querySelector('input')
+	// console.log('this is the input')
+	console.log(input)
+	//Need to save this value
+	const oldValue = parseInt(input.placeholder)
+	const searchClass = parent.className.replace('value', '').replace('edit', '').trim()
+	// if (key.includes('budget')){
+	// 	console.log('budget works')
+	// 	const subtotalElement = parent.parentElement.parentElement.querySelector("[id*="+ "Total" + searchClass+ "budget]")	
+	// 	console.log(subtotalElement)
+	// } else {
+	// 	const subtotalElement = parent.parentElement.parentElement.querySelector("[id*="+ "Total" + searchClass+"]")	
+	// }
+	const subtotalElement = key.includes('budget') ? parent.parentElement.parentElement.querySelector("[id*="+ "Total" + searchClass+ "budget]") : parent.parentElement.parentElement.querySelector("[id*="+ "Total" + searchClass+"]")
+	console.log(subtotalElement)
+	const totalElement = parent.parentElement.parentElement.querySelector(".Total")
+	console.log(subtotalElement)
+	console.log("Label to search for subtotal")
+	console.log(searchClass)
+	console.log(totalElement)
+	const oldsubtotal = parseInt(subtotalElement.innerText)
+	const oldtotal = parseInt(totalElement.innerText)
+	console.log(oldtotal)
+	
+
+	const value = input.value === '' ? input.placeholder : input.value
+	console.log(value)
+
+	//Update new subtotal
+	const newsubtotal = oldsubtotal - oldValue + parseInt(value)
+	subtotalElement.innerText = newsubtotal
+	//Update new total
+	// const newtotal = oldtotal - oldValue + parseInt(value)
+	// totalElement.innerText = newtotal 
+	// this doesn't work because I need the object of operations
+	//THIS IS FUCKING CRITICAL - DO THIS FOR THE NEXT THING ON THURSDAY
+
+	//Change the button to save instead of edit
+	save.setAttribute('id', "savebutton")
+	save.innerText = "Edit"
+	save.onclick = function () {editValue(key)}
+	//Update input
+	parent.removeChild(input)
+	const text = document.createTextNode(value)
+	parent.classList.add('currSign')
+	parent.appendChild(text)
+	console.log(parent)
+
+
+	//check linked values
+	checkLinkedValues("Total"+searchClass, "Total " + searchClass + " do not match across statements")
+	
+	//Need to recalculate the total as well
+}
+
+function editValue(key){
+	console.log('this is the key for editValue')
+	console.log(key)
+	const parent = document.querySelector('#' + key)
+	// console.log("this is the parent")
+	console.log(parent)
+	
+	// console.log("this is the button")
+	
+	const value = parent.innerText.replace("Edit", "")
+	console.log(value)
+
+	parent.innerText = ""
+	// parent.innerText = parent.innerText.replace(value, "")
+	const edit = document.createElement('button')
+	edit.setAttribute('id', 'editbutton')
+	edit.innerText = "Save"
+	edit.style.float = 'left'
+	edit.onclick = function () {saveValue(key)}
+	console.log(edit)
+
+	
+	// parent.innerText.replace(value, '')
+	// parent.removeChild(button)
+	//Change the button to save instead of edit
+	
+	//Update input
+	const editForm = document.createElement('input')
+	editForm.setAttribute("placeholder", value)
+	editForm.setAttribute("type", "text")
+	// parent.appendChild(button)
+	parent.appendChild(edit)
+	parent.appendChild(editForm)
+	// form.classList.remove('value')
+	parent.classList.remove('currSign')
+
+	//Need to recalculate the subtotal - need this function
+	//Need to recalculate the total as well 
+	
 }

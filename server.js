@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, '/pub')))
 app.get('/', (req, res) => {
 	// sending a string
 	// sending some HTML
-	res.send('<h2>Go to /examples.html for a demo of the library</h2><br><h2>Or go to /documentation.html for an explanation of the library</h2>')
+	res.send('<h2>Go to /examples.html for a demo of the library</h2><h2>Or go to /documentation.html for an explanation of the library</h2>')
 })
 
 // Error codes

@@ -20,6 +20,29 @@ const BSdata = {
 	}
 }
 
+
+const BSdata2 = {
+	header: {
+		"company": "FraudCo",
+		"statement": "Balance Sheet",
+		"date": "Dec 31, 2019"
+	},
+	Assets: {
+		"Cash": 101,
+		"Accounts Receivable": 200,
+		"PPE": 300,
+		"Other Assets": 200
+	},
+	Liabilities: {
+		"Accounts Payable": 200,
+		"Long term Debt": 400
+	},
+	Equity: {
+		"Retained Earnings": 100,
+		"Outstanding Shares": 90
+	}
+}
+
 const BSbudget = {
 	Assets: {
 		"Cash": 200,
@@ -61,7 +84,7 @@ const Income = {
 }
 
 function createBS(){
-	const table = statementGenerator(BSdata, "tb1", true, BSbudget)
+	const table = statementGenerator(BSdata, "tb1", true, BSbudget, true)
 	// const table = NotFillableStatement(BSdata, "tb1", true)
 	draganddrop("tb1")
 	console.log(table)
@@ -85,7 +108,7 @@ function createBS(){
 }
 
 function createBudget(){
-	const table = statementGenerator(person, "tb2", true)
+	const table = statementGenerator(person, "tb2", true, null, true)
 	console.log(table)
 	const stmt = document.querySelector('#stmt2')
 	console.log(stmt)
@@ -103,7 +126,7 @@ function createBudget(){
 function slideshow() {
 	const slides = []
 	const slide1 = statementGenerator(person, "tb3", true)
-	const slide2 = statementGenerator(BSdata, 'tb4', true)
+	const slide2 = statementGenerator(BSdata2, 'tb4', true)
 	slides.push(slide1)
 	slides.push(slide2)
 	createAutomaticSlideShow('#slideshow', 'auto', slides, 2000)
@@ -124,34 +147,40 @@ function onLoadFunctions() {
 	formatDifferences();
 	checkDifferences(10, 'budgetdiff', "green", "red")
 	addLink("Total Income");
-	addLink("Cash");
+	// addLink("Cash");
 	checkLinkedValues("Total Income", "Total income does not match across statements");
-	checkLinkedValues("Cash", "Cash does not match across statements");
+}
+
+function onChangeFunctions() {
+	total("tb2", "Net Income", {
+		"Income": "add",
+		"Expenses": "sub",
+	})
+	total("tb1", "Liabilities + Equity", {
+		"Liabilities": "add",
+		"Equity": "add",
+	}, true)
+	checkDifferences(10, 'budgetdiff', "green", "red")
+	
 
 }
 
 
+
+
 window.addEventListener("load", () =>{
 	createBS();
-})
-
-window.addEventListener("load", () =>{
 	createBudget();
-})
-
-
-
-window.addEventListener("load", () =>{
-	slideshow()
-})
-
-window.addEventListener("load", () =>{
-	ManualSlideShow()
-})
-
-window.addEventListener("load", () => {
+	ManualSlideShow();
+	// 	slideshow()
 	onLoadFunctions();
 })
+
+window.addEventListener("click", () =>{
+	onChangeFunctions();
+})
+
+
 // const header = {
 // 	name: "My Company",
 // 	year: "Dec 31, 2020"
