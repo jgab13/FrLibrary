@@ -33,15 +33,13 @@ table {
 	display: none;
 }
 
-#drag.hint {
-		background: #fea;
-}
-#drag.active {
-		background: #ffd4d4;
-}
-
 .subheader button {
 	float: right;
+}
+
+.drag {
+	background: #ffd4d4;
+	font-weight: bold;
 }
 
 

@@ -54,9 +54,16 @@ const person = {
 	}
 }
 
+
+const Income = {
+		"Income sub 1": 40,
+		"Income sub 2": 60
+}
+
 function createBS(){
 	const table = statementGenerator(BSdata, "tb1", true, BSbudget)
 	// const table = NotFillableStatement(BSdata, "tb1", true)
+	draganddrop("tb1")
 	console.log(table)
 	const stmt = document.querySelector('#stmt')
 	console.log(stmt)
@@ -87,6 +94,8 @@ function createBudget(){
 		"Income": "add",
 		"Expenses": "sub",
 	})
+	addSubComponents(Income, "Income 1", "Income", table)
+	rateCalculor(0.3, "Net Income", table, "Income tax to pay")
 }
 
 
@@ -107,6 +116,7 @@ function ManualSlideShow() {
 	slides.push(slide1)
 	slides.push(slide2)
 	createManualSlideShow('#slideshow2', 'manual', slides)
+	rateCalculor(0.3, "Long term Debt", slide2, "Interest to pay")
 }
 
 function onLoadFunctions() {
