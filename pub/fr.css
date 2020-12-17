@@ -10,12 +10,17 @@ table {
 	width: 70%;
 }
 
+tr:hover {
+	background-color: #C8C8C8;
+}
+
+
 .header{
 	text-align: center;
 	font-size: 25px;
 }
 .label{
-	width: 65%;
+	width: 50%;
 }
 
 .value{
@@ -38,11 +43,49 @@ table {
 }
 
 .drag {
-	background: #ffd4d4;
+	background: #F0F0F0;
 	font-weight: bold;
 }
 
-input {
-	width: 70%;	
+
+
+button {
+
+	background-color: #555555; 
+	color: white;
+	font-size: 16px;
+	border: none;
+	border-radius: 2px;
+	padding: 4px 6px
 }
+
+button:hover{
+	background-color: white;
+	color: black;
+	border: 1px solid black;
+	border-radius: 2px;
+}
+
+.subheader{
+	background-color: #E8E8E8;
+}
+
+.header{
+	background-color: #DCDCDC;	
+}
+
+input {
+	border-radius: 2px;
+	border: 1px solid black;
+	font-size: 15px;
+	width: 50%;
+	padding: 4px;
+}
+
+
+
+
+::-webkit-input-placeholder { text-align:right; }
+
+
 

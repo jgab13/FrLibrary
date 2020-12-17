@@ -246,7 +246,7 @@ function sectionBudget(data, budget, label, sub, table, span, edit){
 		let value = data[sublabel]
 		subactual += value
 		if (edit){
-			tdvalue.className = "value " + label + ' edit'
+			tdvalue.className = "value " + label + ' budget' +' edit'
 	      	const save = document.createElement('button')
 	      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
 	      	// save.setAttribute('id', buttonlabel)
@@ -807,7 +807,7 @@ function saveValue(key){
 	console.log(input)
 	//Need to save this value
 	const oldValue = parseInt(input.placeholder)
-	const searchClass = parent.className.replace('value', '').replace('edit', '').trim()
+	const searchClass = parent.className.replace('value', '').replace('edit', '').replace('budget', '').trim()
 	// if (key.includes('budget')){
 	// 	console.log('budget works')
 	// 	const subtotalElement = parent.parentElement.parentElement.querySelector("[id*="+ "Total" + searchClass+ "budget]")	

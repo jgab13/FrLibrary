@@ -160,7 +160,7 @@ function ManualSlideShow() {
 function onLoadFunctions() {
 	formatValues();
 	formatDifferences();
-	checkDifferences(10, 'budgetdiff', "green", "red")
+	checkDifferences(10, 'budgetdiff', "#1CAC78", "#fd5c63")
 	addLink("Total Income");
 	// addLink("Cash");
 	checkLinkedValues("Total Income", "Total income does not match across statements");
@@ -175,7 +175,7 @@ function onChangeFunctions() {
 		"Liabilities": "add",
 		"Equity": "add",
 	}, true)
-	checkDifferences(10, 'budgetdiff', "green", "red")
+	checkDifferences(10, 'budgetdiff', "#1CAC78", "#fd5c63")
 	formatDifferences();
 	
 
