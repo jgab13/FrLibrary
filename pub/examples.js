@@ -127,8 +127,8 @@ function createBudget(){
 		"Expenses": "sub",
 	})
 	fa.draganddrop("tb2")
-	addSubComponents(Income, "Income 1", "Income", table)
-	rateCalculor(0.3, "Net Income", table, "Income tax to pay")
+	fa.addSubComponents(Income, "Income 1", "Income", table)
+	fa.rateCalculor(0.3, "Net Income", table, "Income tax to pay")
 }
 
 
@@ -140,7 +140,7 @@ function slideshow() {
 	const slide2 = fb.statementGenerator(BSdata2, 'tb4', true)
 	slides.push(slide1)
 	slides.push(slide2)
-	createAutomaticSlideShow('#slideshow', 'auto', slides, 2000)
+	fb.createAutomaticSlideShow('#slideshow', 'auto', slides, 2000)
 }
 
 function ManualSlideShow() {
@@ -157,8 +157,8 @@ function ManualSlideShow() {
 	// addSubComponents(Income, "Income 1", "Income", slide1)
 	slides.push(slide1)
 	slides.push(slide2)
-	createManualSlideShow('#slideshow2', 'manual', slides)
-	rateCalculor(0.3, "Long term Debt", slide2, "Interest to pay")
+	fc.createManualSlideShow('#slideshow2', 'manual', slides)
+	fc.rateCalculor(0.3, "Long term Debt", slide2, "Interest to pay")
 	fc.total("tb5", "Net Income", {
 		"Income": "add",
 		"Expenses": "sub",
@@ -170,12 +170,12 @@ function ManualSlideShow() {
 }
 
 function onLoadFunctions() {
-	formatValues();
-	formatDifferences();
-	checkDifferences(10, 'budgetdiff', "#1CAC78", "#fd5c63")
-	addLink("Total Income");
-	addLink("Cash");
-	checkLinkedValues("Total Income", "Total income does not match across statements");
+	f.formatValues();
+	f.formatDifferences();
+	f.checkDifferences(10, 'budgetdiff', "#1CAC78", "#fd5c63")
+	f.addLink("Total Income");
+	f.addLink("Cash");
+	f.checkLinkedValues("Total Income", "Total income does not match across statements");
 }
 
 function onChangeFunctions() {
@@ -187,10 +187,8 @@ function onChangeFunctions() {
 		"Liabilities": "add",
 		"Equity": "add",
 	}, true)
-	checkDifferences(10, 'budgetdiff', "#1CAC78", "#fd5c63")
-	formatDifferences();
-	
-
+	f.checkDifferences(10, 'budgetdiff', "#1CAC78", "#fd5c63")
+	f.formatDifferences();
 }
 
 
