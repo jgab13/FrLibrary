@@ -119,7 +119,7 @@
 			let value = data[sublabel]
 			subactual += value
 			if (edit){
-				tdvalue.className = "value " + label + ' budget' +' edit'
+				tdvalue.className = "value " + label +' edit'
 		      	const save = document.createElement('button')
 		      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
 		      	// save.setAttribute('id', buttonlabel)
@@ -153,7 +153,7 @@
 			let budg = budget[sublabel]
 			subbudget += budg
 			if (edit){
-				tdbudget.className = "value " + label + ' edit'
+				tdbudget.className = "value " + label + ' budget edit'
 		      	const saveBudg = document.createElement('button')
 		      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
 		      	// save.setAttribute('id', buttonlabel)
