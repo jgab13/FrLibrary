@@ -117,7 +117,7 @@ function createBudget(){
 		"Income": "add",
 		"Expenses": "sub",
 	})
-	addSubComponents(Income, "Income 1", "Income", table)
+	// addSubComponents(Income, "Income 1", "Income", table)
 	rateCalculor(0.3, "Net Income", table, "Income tax to pay")
 }
 
@@ -136,10 +136,25 @@ function ManualSlideShow() {
 	const slides = []
 	const slide1 = statementGenerator(person, "tb5", true)
 	const slide2 = statementGenerator(BSdata, 'tb6', true)
+	
+	
+	// total("tb5", "Net Income", {
+	// 	"Income": "add",
+	// 	"Expenses": "sub",
+	// })
+	// addSubComponents(Income, "Income 1", "Income", slide1)
 	slides.push(slide1)
 	slides.push(slide2)
 	createManualSlideShow('#slideshow2', 'manual', slides)
 	rateCalculor(0.3, "Long term Debt", slide2, "Interest to pay")
+	total("tb5", "Net Income", {
+		"Income": "add",
+		"Expenses": "sub",
+	})
+	total("tb6", "Liabilities + Equity", {
+		"Liabilities": "add",
+		"Equity": "add",
+	})
 }
 
 function onLoadFunctions() {
@@ -152,15 +167,16 @@ function onLoadFunctions() {
 }
 
 function onChangeFunctions() {
-	total("tb2", "Net Income", {
+	editTotal("tb2", "Net Income", {
 		"Income": "add",
 		"Expenses": "sub",
 	})
-	total("tb1", "Liabilities + Equity", {
+	editTotal("tb1", "Liabilities + Equity", {
 		"Liabilities": "add",
 		"Equity": "add",
 	}, true)
 	checkDifferences(10, 'budgetdiff', "green", "red")
+	formatDifferences();
 	
 
 }

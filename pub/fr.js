@@ -7,6 +7,80 @@
 //add functions that generate statement and do validation, etc
 //other functionality - HAS TO BE DONE ON THURSDAY
 
+function editTotal(tblselect, label, operations, budget){
+	const table = document.querySelector('#' + tblselect)
+	// const row = document.createElement('tr')
+	// const rowLabel = document.createElement('td')
+	// rowLabel.innerText = label
+	// rowLabel.className = 'label'
+	// row.appendChild(rowLabel)
+
+	const oplen = Object.keys(operations).length
+	console.log(oplen)
+	let total = 0
+	let totalbudg = 0
+	for (let i = 0; i < oplen; i++){
+		let operation = Object.keys(operations)[i]
+		let selector = 'Total' + operation.replace(/ /g, '') + tblselect
+		console.log(selector)
+		const val = parseInt(document.querySelector('#' + selector).innerText)
+		console.log("The value of the total is ")
+		console.log(val)
+
+		if (operations[operation] === 'add'){
+			total += val
+		} else {	
+			total -= val
+		}
+
+		if (budget){
+			let budgetselect = 'Total' + operation.replace(/ /g, '') + 'budget' +  tblselect
+			const budg = parseInt(document.querySelector('#' + budgetselect).innerText)
+			console.log(budg)
+
+			if (operations[operation] === 'add'){
+			totalbudg += budg
+			} else {	
+				totalbudg -= budg
+			}
+		}
+	}
+	console.log(total)
+	console.log(totalbudg)
+	// const rowValue = document.createElement('td')
+	// rowValue.className = 'value Total'
+	const rows = table.querySelectorAll('.Total')
+	// const formatLabel = ('#' + label.replace(/ /g, '') + tblselect)
+	// const rowValue = document.querySelector('#' + formatLabel + tblselect)
+	// console.log(rowValue)
+	rows[0].innerText = total
+	// rowValue.setAttribute('id', label.replace(/ /g, '') + tblselect)
+	// row.appendChild(rowValue)
+	if (budget){
+		
+		// const rowBud = document.createElement('td')
+		// rowBud.className = 'value Total budget'
+		// const rows[0] = document.querySelector('#' + label.replace(/ /g, '')+ "budget" + tblselect)
+		rows[1].innerText = totalbudg
+		// rowBud.setAttribute('id', label.replace(/ /g, '')+ "budget" + tblselect)
+		// row.appendChild(rowBud)	
+
+		// const rowDiff = document.createElement('td')
+		// rowDiff.className = 'value Total budget'
+		// const rowDif = document.querySelector('#' + label.replace(/ /g, '')+ "diff" + tblselect)
+		rows[2].innerText = total - totalbudg
+		// rowDiff.setAttribute('id', label.replace(/ /g, '')+ "diff" + tblselect)
+		// row.appendChild(rowDiff)	
+
+		// const rowBudDiff = document.createElement('td')
+		// rowBudDiff.className = 'value Total budget'
+		// const rowBudDiff = document.querySelector('#' + label.replace(/ /g, '')+ "budgetdiff" + tblselect)
+		rows[3].innerText = ((total - totalbudg) / totalbudg) * 100
+		// rowBudDiff.setAttribute('id', label.replace(/ /g, '')+ "budgetdiff" + tblselect)
+		// row.appendChild(rowBudDiff)
+	}
+	// table.appendChild(row)
+}
 
 function total(tblselect, label, operations, budget){
 	const table = document.querySelector('#' + tblselect)
@@ -66,7 +140,7 @@ function total(tblselect, label, operations, budget){
 
 		const rowBudDiff = document.createElement('td')
 		rowBudDiff.className = 'value Total budget'
-		rowBudDiff.innerText = (total - totalbudg) / totalbudg
+		rowBudDiff.innerText = ((total - totalbudg) / totalbudg) * 100
 		rowBudDiff.setAttribute('id', label.replace(/ /g, '')+ "budgetdiff" + tblselect)
 		row.appendChild(rowBudDiff)
 	}
@@ -219,7 +293,7 @@ function sectionBudget(data, budget, label, sub, table, span, edit){
 	      	const input = document.createElement('input')
 	      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
 	      	// inp.setAttribute('id', inplabel)
-	      	input.setAttribute("placeholder", subbudget)
+	      	input.setAttribute("placeholder", budg)
 	      	input.setAttribute("type", "text")
 	      	tdbudget.appendChild(input)
 
@@ -240,7 +314,7 @@ function sectionBudget(data, budget, label, sub, table, span, edit){
 		const tdperc = document.createElement('td')
 		tdperc.className = "value " + label + " budget"
 		tdperc.setAttribute('id', sublabel.replace(/ /g, '')+ "budgetdiff" + table.getAttribute('id'))
-		let diffperc = diff / budg
+		let diffperc = diff / budg * 100
 		console.log("this si the diffperc")
 		console.log(diffperc)
 		tdperc.innerText = diffperc
@@ -281,7 +355,7 @@ function sectionBudget(data, budget, label, sub, table, span, edit){
    	  const subrowperc = document.createElement('td')
    	  subrowperc.className = "value " + label + " budget"
    	  subrowperc.setAttribute('id', sublabel.innerText.replace(/ /g, '') + "budgetdiff" + table.getAttribute('id'))
-   	  subrowperc.innerText = (subactual - subbudget) / subbudget
+   	  subrowperc.innerText = ((subactual - subbudget) / subbudget) * 100
    	  subrow.appendChild(subrowperc)
 
    	  table.appendChild(subrow)
@@ -481,7 +555,7 @@ function formatDifferences(){
  	let y = document.querySelectorAll("[id*='budgetdiff']"); 
  	let len = y.length
     for (let i = 0; i < len; i++) { 
-        let num = (parseFloat(y[i].innerHTML) * 100).toFixed(0) + "%"
+        let num = (parseFloat(y[i].innerHTML)).toFixed(0) + "%"
         y[i].innerHTML = num; 
         y[i].classList.remove("currSign")
     } 
@@ -489,6 +563,7 @@ function formatDifferences(){
 
 function checkDifferences(threshold, id, success, failure){
 	const diffsToCheck = document.querySelectorAll("[id*=" + id + "]")
+	console.log(diffsToCheck)
    	for (let i = 0; i < diffsToCheck.length; i++){
    		console.log(parseFloat(diffsToCheck[i].innerHTML))
    		if (parseFloat(diffsToCheck[i].innerHTML) > 0 && parseFloat(diffsToCheck[i].innerHTML) > threshold) {
@@ -497,6 +572,9 @@ function checkDifferences(threshold, id, success, failure){
    		} else if (parseFloat(diffsToCheck[i].innerHTML) < 0 && parseFloat(diffsToCheck[i].innerHTML) < -threshold){
    			diffsToCheck[i].style.color = "white";
    			diffsToCheck[i].style.backgroundColor = failure;
+   		} else {
+   			diffsToCheck[i].style.color = "black";
+   			diffsToCheck[i].style.backgroundColor = "";
    		}
    	}
 }
@@ -752,14 +830,20 @@ function saveValue(key){
 	const value = input.value === '' ? input.placeholder : input.value
 	console.log(value)
 
+	//update row
+
+
 	//Update new subtotal
 	const newsubtotal = oldsubtotal - oldValue + parseInt(value)
 	subtotalElement.innerText = newsubtotal
+	const subtotalers = subtotalElement.parentElement.querySelectorAll("[id*='Total']")
+	if (subtotalers.length > 2){
+		subtotalers[2].innerText = parseInt(subtotalers[0].innerText) - parseInt(subtotalers[1].innerText)
+		subtotalers[3].innerText = parseInt(subtotalers[2].innerText) / parseInt(subtotalers[1].innerText) * 100
+
+	}
 	//Update new total
-	// const newtotal = oldtotal - oldValue + parseInt(value)
-	// totalElement.innerText = newtotal 
-	// this doesn't work because I need the object of operations
-	//THIS IS FUCKING CRITICAL - DO THIS FOR THE NEXT THING ON THURSDAY
+	//EditTotal function does this
 
 	//Change the button to save instead of edit
 	save.setAttribute('id', "savebutton")
@@ -771,6 +855,29 @@ function saveValue(key){
 	parent.classList.add('currSign')
 	parent.appendChild(text)
 	console.log(parent)
+
+	const grandParent = parent.parentElement
+	console.log(grandParent)
+	const parentSibling = grandParent.querySelectorAll('.value')
+	console.log(parentSibling)
+	if (key.includes('budget')){
+		//Need to update the difference stuff
+		const actualVal = parentSibling[0].querySelector('input') === null ? parseInt(parentSibling[0].innerText.replace('Edit', '')) : parseInt(parentSibling[0].querySelector('input').placeholder) 
+		console.log("FUCLKSKLAGKLFGLKALKFDKLFKLASFD")
+		console.log(parentSibling[0].querySelector('.input'))
+		console.log(actualVal)
+		const budgetVal = value 
+		console.log(budgetVal)
+		parentSibling[2].innerText = actualVal - budgetVal
+		parentSibling[3].innerText = (actualVal - budgetVal) / budgetVal * 100 
+	} else if (parentSibling.length > 2){
+		const actualVal = value 
+		console.log(actualVal)
+		const budgetVal = parentSibling[1].querySelector('input') === null ? parseInt(parentSibling[1].innerText.replace('Edit', '')) : parseInt(parentSibling[1].querySelector('input').placeholder)
+		console.log(budgetVal)
+		parentSibling[2].innerText = actualVal - budgetVal
+		parentSibling[3].innerText = (actualVal - budgetVal) / budgetVal * 100 
+	}
 
 
 	//check linked values
