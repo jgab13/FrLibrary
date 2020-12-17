@@ -83,15 +83,21 @@ const Income = {
 		"Income sub 2": 60
 }
 
+const f = new fr()
+const fa = new fr()
+const fb = new fr()
+const fc = new fr()
+
 function createBS(){
-	const table = statementGenerator(BSdata, "tb1", true, BSbudget, true)
+	
+	const table = f.statementGenerator(BSdata, "tb1", true, BSbudget, true)
 	// const table = NotFillableStatement(BSdata, "tb1", true)
-	draganddrop("tb1")
+	f.draganddrop("tb1")
 	console.log(table)
 	const stmt = document.querySelector('#stmt')
 	console.log(stmt)
 	stmt.appendChild(table)
-	total("tb1", "Liabilities + Equity", {
+	f.total("tb1", "Liabilities + Equity", {
 		"Liabilities": "add",
 		"Equity": "add",
 	}, true)
@@ -107,16 +113,20 @@ function createBS(){
 	// footer.appendChild(text)
 }
 
+
+
 function createBudget(){
-	const table = statementGenerator(person, "tb2", true, null, true)
+
+	const table = fa.statementGenerator(person, "tb2", true, null, true)
 	console.log(table)
 	const stmt = document.querySelector('#stmt2')
 	console.log(stmt)
 	stmt.appendChild(table)
-	total("tb2", "Net Income", {
+	fa.total("tb2", "Net Income", {
 		"Income": "add",
 		"Expenses": "sub",
 	})
+	fa.draganddrop("tb2")
 	addSubComponents(Income, "Income 1", "Income", table)
 	rateCalculor(0.3, "Net Income", table, "Income tax to pay")
 }
@@ -124,9 +134,10 @@ function createBudget(){
 
 
 function slideshow() {
+
 	const slides = []
-	const slide1 = statementGenerator(person, "tb3", true)
-	const slide2 = statementGenerator(BSdata2, 'tb4', true)
+	const slide1 = fb.statementGenerator(person, "tb3", true)
+	const slide2 = fb.statementGenerator(BSdata2, 'tb4', true)
 	slides.push(slide1)
 	slides.push(slide2)
 	createAutomaticSlideShow('#slideshow', 'auto', slides, 2000)
@@ -134,8 +145,9 @@ function slideshow() {
 
 function ManualSlideShow() {
 	const slides = []
-	const slide1 = statementGenerator(person, "tb5", true)
-	const slide2 = statementGenerator(BSdata, 'tb6', true)
+
+	const slide1 = fc.statementGenerator(person, "tb5", true)
+	const slide2 = fc.statementGenerator(BSdata, 'tb6', true)
 	
 	
 	// total("tb5", "Net Income", {
@@ -147,11 +159,11 @@ function ManualSlideShow() {
 	slides.push(slide2)
 	createManualSlideShow('#slideshow2', 'manual', slides)
 	rateCalculor(0.3, "Long term Debt", slide2, "Interest to pay")
-	total("tb5", "Net Income", {
+	fc.total("tb5", "Net Income", {
 		"Income": "add",
 		"Expenses": "sub",
 	})
-	total("tb6", "Liabilities + Equity", {
+	fc.total("tb6", "Liabilities + Equity", {
 		"Liabilities": "add",
 		"Equity": "add",
 	})
@@ -167,11 +179,11 @@ function onLoadFunctions() {
 }
 
 function onChangeFunctions() {
-	editTotal("tb2", "Net Income", {
+	fa.editTotal("tb2", "Net Income", {
 		"Income": "add",
 		"Expenses": "sub",
 	})
-	editTotal("tb1", "Liabilities + Equity", {
+	f.editTotal("tb1", "Liabilities + Equity", {
 		"Liabilities": "add",
 		"Equity": "add",
 	}, true)
@@ -188,7 +200,7 @@ window.addEventListener("load", () =>{
 	createBS();
 	createBudget();
 	ManualSlideShow();
-	slideshow()
+	// slideshow()
 	onLoadFunctions();
 })
 

@@ -7,246 +7,284 @@
 //add functions that generate statement and do validation, etc
 //other functionality - HAS TO BE DONE ON THURSDAY
 
-function editTotal(tblselect, label, operations, budget){
-	const table = document.querySelector('#' + tblselect)
-	// const row = document.createElement('tr')
-	// const rowLabel = document.createElement('td')
-	// rowLabel.innerText = label
-	// rowLabel.className = 'label'
-	// row.appendChild(rowLabel)
+(function(global, document) { 
 
-	const oplen = Object.keys(operations).length
-	console.log(oplen)
-	let total = 0
-	let totalbudg = 0
-	for (let i = 0; i < oplen; i++){
-		let operation = Object.keys(operations)[i]
-		let selector = 'Total' + operation.replace(/ /g, '') + tblselect
-		console.log(selector)
-		const val = parseInt(document.querySelector('#' + selector).innerText)
-		console.log("The value of the total is ")
-		console.log(val)
+	// this function is currently only in the scope of the anonymous function at the moment.
+	function fr() {}
 
-		if (operations[operation] === 'add'){
-			total += val
-		} else {	
-			total -= val
-		}
+	/* Private properties and functions */
+	// unless we attach these to the global window object, they cannot be accessed directly.
+	// they will only be in the closure of this function, and can be accessed only the places we use them (such as in the functions of the CircleGenerator prototype)
+		// (see examples.js for what we can and cannot access)
+	// let _totalNumberOfCirclesEverCreated = 0
+	// function _incrementTotalCircles() {
+	// 	_totalNumberOfCirclesEverCreated++;
+	// }
+	function header(data, table, span) {
+	   const header = data["header"]
+	   console.log(header)
+	   const headerlength = Object.keys(header).length
+	   console.log(headerlength)
+	   for (let i = 0; i < headerlength; i++){
+	      let key = Object.keys(header)[i]
+	      console.log(header[key])
 
-		if (budget){
-			let budgetselect = 'Total' + operation.replace(/ /g, '') + 'budget' +  tblselect
-			const budg = parseInt(document.querySelector('#' + budgetselect).innerText)
-			console.log(budg)
+	      //Do the work of creating header nodes
+	      let tr = document.createElement('tr')
+	      let th = document.createElement('th')
+	      th.className = "header"
+	      th.setAttribute("colspan", span)
+	      th.innerText = header[key]
+	      tr.appendChild(th)
+	      table.appendChild(tr)
+	   }
+	}
 
-			if (operations[operation] === 'add'){
-			totalbudg += budg
-			} else {	
-				totalbudg -= budg
+	function budgetHeader(table){
+		const tr = document.createElement('tr')
+		const td = document.createElement('td')
+		td.className = 'subheader actual'
+		td.setAttribute('colspan', 1)
+		const button = document.createElement('button')
+		button.onclick = function() {collapseBudget();}
+		button.innerText = 'Hide'
+		button.setAttribute('id', 'hidebutton')
+		td.appendChild(button)
+		tr.appendChild(td)
+
+		const actual = document.createElement('td')
+		actual.className = 'subheader actual'
+		actual.setAttribute('colspan', 1)
+		actual.innerText = 'Actual'
+		tr.appendChild(actual)
+
+		const budget = document.createElement('td')
+		budget.className = 'subheader budget'
+		budget.setAttribute('colspan', 1)
+		budget.innerText = 'Budget'
+		tr.appendChild(budget)
+
+		const diff = document.createElement('td')
+		diff.className = 'subheader budget'
+		diff.setAttribute('colspan', 1)
+		diff.innerText = 'Diff'
+		tr.appendChild(diff)
+
+		const percent = document.createElement('td')
+		percent.className = 'subheader budget'
+		percent.setAttribute('colspan', 1)
+		percent.innerText = '% Diff'
+		tr.appendChild(percent)
+
+		table.appendChild(tr)
+	}
+
+	//data[label], budget[label] label, sub, table, 5
+	function sectionBudget(data, budget, label, sub, table, span, edit){
+		const tr = document.createElement('tr')
+		const td = document.createElement('td')
+		td.className = "subheader " + label
+		td.setAttribute("colspan", span)
+		td.innerText = label
+		const button = document.createElement('button')
+		button.setAttribute('type', 'button')
+		const buttonlabel = 'button' + label.replace(/ /g, '')
+		button.setAttribute('id', buttonlabel)
+		button.innerText = 'Hide'
+		button.onclick = function() {collapseRows(buttonlabel, label, table)}
+		console.log(button)
+		td.appendChild(button)
+		tr.appendChild(td)
+
+		table.appendChild(tr)
+
+		let subactual = 0
+		let subbudget = 0
+
+		const length = Object.keys(data).length
+		for (let i =0; i < length; i++){
+			const tbrow = document.createElement('tr')
+	      	//sublabel for name of row
+			const tdlabel = document.createElement('td')
+			tdlabel.className = 'label'
+			let sublabel = Object.keys(data)[i]
+			tdlabel.innerText = sublabel
+
+			//need an edit and input
+			//actual value for row
+			const tdvalue = document.createElement('td')
+			
+			const identifier = sublabel.replace(/ /g, '') + table.getAttribute('id')
+			tdvalue.setAttribute('id', identifier)
+			let value = data[sublabel]
+			subactual += value
+			if (edit){
+				tdvalue.className = "value " + label + ' budget' +' edit'
+		      	const save = document.createElement('button')
+		      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
+		      	// save.setAttribute('id', buttonlabel)
+		      	save.style.float = 'left'
+		      	save.onclick = function () {saveValue(identifier);}
+		      	save.innerText = 'Save'
+		      	save.setAttribute("id", "editbutton")
+		      	tdvalue.appendChild(save)
+
+		      	const inp = document.createElement('input')
+		      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
+		      	// inp.setAttribute('id', inplabel)
+		      	inp.setAttribute("placeholder", value)
+		      	inp.setAttribute("type", "text")
+		 
+		      	console.log(inp)
+		      	tdvalue.appendChild(inp)
+		      	console.log(tdvalue)
+
+			} else {
+				tdvalue.className = "value " + label
+				tdvalue.innerText = value
 			}
-		}
-	}
-	console.log(total)
-	console.log(totalbudg)
-	// const rowValue = document.createElement('td')
-	// rowValue.className = 'value Total'
-	const rows = table.querySelectorAll('.Total')
-	// const formatLabel = ('#' + label.replace(/ /g, '') + tblselect)
-	// const rowValue = document.querySelector('#' + formatLabel + tblselect)
-	// console.log(rowValue)
-	rows[0].innerText = total
-	// rowValue.setAttribute('id', label.replace(/ /g, '') + tblselect)
-	// row.appendChild(rowValue)
-	if (budget){
-		
-		// const rowBud = document.createElement('td')
-		// rowBud.className = 'value Total budget'
-		// const rows[0] = document.querySelector('#' + label.replace(/ /g, '')+ "budget" + tblselect)
-		rows[1].innerText = totalbudg
-		// rowBud.setAttribute('id', label.replace(/ /g, '')+ "budget" + tblselect)
-		// row.appendChild(rowBud)	
 
-		// const rowDiff = document.createElement('td')
-		// rowDiff.className = 'value Total budget'
-		// const rowDif = document.querySelector('#' + label.replace(/ /g, '')+ "diff" + tblselect)
-		rows[2].innerText = total - totalbudg
-		// rowDiff.setAttribute('id', label.replace(/ /g, '')+ "diff" + tblselect)
-		// row.appendChild(rowDiff)	
+			//need an edit and input
+			//budget value for row
+			const tdbudget = document.createElement('td')
+			
+			const budgetID = sublabel.replace(/ /g, '') + "budget" + table.getAttribute('id')
+			tdbudget.setAttribute('id', budgetID)
+			let budg = budget[sublabel]
+			subbudget += budg
+			if (edit){
+				tdbudget.className = "value " + label + ' edit'
+		      	const saveBudg = document.createElement('button')
+		      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
+		      	// save.setAttribute('id', buttonlabel)
+		      	saveBudg.style.float = 'left'
+		      	saveBudg.onclick = function () {saveValue(budgetID);}
+		      	saveBudg.innerText = 'Save'
+		      	saveBudg.setAttribute("id", "editbutton")
+		      	tdbudget.appendChild(saveBudg)
 
-		// const rowBudDiff = document.createElement('td')
-		// rowBudDiff.className = 'value Total budget'
-		// const rowBudDiff = document.querySelector('#' + label.replace(/ /g, '')+ "budgetdiff" + tblselect)
-		rows[3].innerText = ((total - totalbudg) / totalbudg) * 100
-		// rowBudDiff.setAttribute('id', label.replace(/ /g, '')+ "budgetdiff" + tblselect)
-		// row.appendChild(rowBudDiff)
-	}
-	// table.appendChild(row)
-}
+		      	const input = document.createElement('input')
+		      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
+		      	// inp.setAttribute('id', inplabel)
+		      	input.setAttribute("placeholder", budg)
+		      	input.setAttribute("type", "text")
+		      	tdbudget.appendChild(input)
 
-function total(tblselect, label, operations, budget){
-	const table = document.querySelector('#' + tblselect)
-	const row = document.createElement('tr')
-	const rowLabel = document.createElement('td')
-	rowLabel.innerText = label
-	rowLabel.className = 'label'
-	row.appendChild(rowLabel)
-
-	const oplen = Object.keys(operations).length
-	console.log(oplen)
-	let total = 0
-	let totalbudg = 0
-	for (let i = 0; i < oplen; i++){
-		let operation = Object.keys(operations)[i]
-		let selector = 'Total' + operation.replace(/ /g, '') + tblselect
-		console.log(selector)
-		const val = parseInt(document.querySelector('#' + selector).innerText)
-		console.log("The value of the total is ")
-		console.log(val)
-
-		if (operations[operation] === 'add'){
-			total += val
-		} else {	
-			total -= val
-		}
-
-		if (budget){
-			let budgetselect = 'Total' + operation.replace(/ /g, '') + 'budget' +  tblselect
-			const budg = parseInt(document.querySelector('#' + budgetselect).innerText)
-			console.log(budg)
-
-			if (operations[operation] === 'add'){
-			totalbudg += budg
-			} else {	
-				totalbudg -= budg
+			} else {
+				tdbudget.className = "value " + label + " budget"
+				tdbudget.innerText = budg
 			}
-			}
+
+
+			//diff value for row
+			const tddiff = document.createElement('td')
+			tddiff.className = "value " + label + " budget"
+			tddiff.setAttribute('id', sublabel.replace(/ /g, '')+ "diff" + table.getAttribute('id'))
+			let diff = value - budg
+			tddiff.innerText = diff
+
+			//diff % value for row
+			const tdperc = document.createElement('td')
+			tdperc.className = "value " + label + " budget"
+			tdperc.setAttribute('id', sublabel.replace(/ /g, '')+ "budgetdiff" + table.getAttribute('id'))
+			let diffperc = diff / budg * 100
+			console.log("this si the diffperc")
+			console.log(diffperc)
+			tdperc.innerText = diffperc
+
+			//append to end of row
+			tbrow.appendChild(tdlabel)
+			tbrow.appendChild(tdvalue)
+			tbrow.appendChild(tdbudget)
+			tbrow.appendChild(tddiff)
+			tbrow.appendChild(tdperc)
+			table.appendChild(tbrow)
+		}
+		if (sub){
+	   	  const subrow = document.createElement('tr')
+	   	  const sublabel = document.createElement('td')
+	   	  sublabel.className = 'label'
+	   	  sublabel.innerText = 'Total ' + label 
+	   	  subrow.appendChild(sublabel)
+
+	   	  const subrowval = document.createElement('td')
+	   	  subrowval.className = "value " + label
+	   	  subrowval.setAttribute('id', sublabel.innerText.replace(/ /g, '') + table.getAttribute('id'))
+	   	  subrowval.innerText = subactual
+	   	  subrow.appendChild(subrowval)
+
+	   	  const subrowbudg = document.createElement('td')
+	   	  subrowbudg.className = "value " + label + " budget"
+	   	  subrowbudg.setAttribute('id', sublabel.innerText.replace(/ /g, '') + "budget" + table.getAttribute('id'))
+	   	  subrowbudg.innerText = subbudget
+	   	  subrow.appendChild(subrowbudg)
+
+	   	  const subrowdiff = document.createElement('td')
+	   	  subrowdiff.className = "value " + label + " budget"
+	   	  subrowdiff.setAttribute('id', sublabel.innerText.replace(/ /g, '') + "diff" + table.getAttribute('id'))
+	   	  subrowdiff.innerText = subactual - subbudget
+	   	  subrow.appendChild(subrowdiff)
+
+	   	  const subrowperc = document.createElement('td')
+	   	  subrowperc.className = "value " + label + " budget"
+	   	  subrowperc.setAttribute('id', sublabel.innerText.replace(/ /g, '') + "budgetdiff" + table.getAttribute('id'))
+	   	  subrowperc.innerText = ((subactual - subbudget) / subbudget) * 100
+	   	  subrow.appendChild(subrowperc)
+
+	   	  table.appendChild(subrow)
+	   }
 	}
-	const rowValue = document.createElement('td')
-	rowValue.className = 'value Total'
-	rowValue.innerText = total
-	rowValue.setAttribute('id', label.replace(/ /g, '') + tblselect)
-	row.appendChild(rowValue)
-	if (budget){
-		const rowBud = document.createElement('td')
-		rowBud.className = 'value Total budget'
-		rowBud.innerText = totalbudg
-		rowBud.setAttribute('id', label.replace(/ /g, '')+ "budget" + tblselect)
-		row.appendChild(rowBud)	
 
-		const rowDiff = document.createElement('td')
-		rowDiff.className = 'value Total budget'
-		rowDiff.innerText = total - totalbudg
-		rowDiff.setAttribute('id', label.replace(/ /g, '')+ "diff" + tblselect)
-		row.appendChild(rowDiff)	
+	function section(data, label, sub, table, span, edit){
+	   //Create the subheader label
+	   const tr = document.createElement('tr')
+	   const td = document.createElement('td')
+	   td.className = "subheader " + label
+	   td.setAttribute("colspan", span)
+	   td.innerText = label
+	   const button = document.createElement('button')
+	   button.setAttribute('type', 'button')
+	   const buttonlabel = 'button' + label.replace(/ /g, '')
+	   button.setAttribute('id', buttonlabel)
+	   button.innerText = 'Hide'
+	   button.onclick = function() {collapseRows(buttonlabel, label, table)}
+	   console.log(button)
+	   td.appendChild(button)
+	   tr.appendChild(td)
 
-		const rowBudDiff = document.createElement('td')
-		rowBudDiff.className = 'value Total budget'
-		rowBudDiff.innerText = ((total - totalbudg) / totalbudg) * 100
-		rowBudDiff.setAttribute('id', label.replace(/ /g, '')+ "budgetdiff" + tblselect)
-		row.appendChild(rowBudDiff)
-	}
-	table.appendChild(row)
-}
+	   table.appendChild(tr)
 
-function header(data, table, span) {
-   const header = data["header"]
-   console.log(header)
-   const headerlength = Object.keys(header).length
-   console.log(headerlength)
-   for (let i = 0; i < headerlength; i++){
-      let key = Object.keys(header)[i]
-      console.log(header[key])
+	   //tally section subtotal
+	   let subtotal = 0
 
-      //Do the work of creating header nodes
-      let tr = document.createElement('tr')
-      let th = document.createElement('th')
-      th.className = "header"
-      th.setAttribute("colspan", span)
-      th.innerText = header[key]
-      tr.appendChild(th)
-      table.appendChild(tr)
-   }
-}
+	   console.log(data[label])
+	   const length = Object.keys(data).length
+	   console.log(length)
+	   for (let i = 0; i < length; i++){
+	      //row for the new label and value
+	      const tbrow = document.createElement('tr')
+	      //sublabel for name of row
+	      const tdlabel = document.createElement('td')
+	      tdlabel.className = 'label'
+	      let sublabel = Object.keys(data)[i]
+	      tdlabel.innerText = sublabel
 
-function budgetHeader(table){
-	const tr = document.createElement('tr')
-	const td = document.createElement('td')
-	td.className = 'subheader actual'
-	td.setAttribute('colspan', 1)
-	const button = document.createElement('button')
-	button.onclick = function() {collapseBudget();}
-	button.innerText = 'Hide'
-	button.setAttribute('id', 'hidebutton')
-	td.appendChild(button)
-	tr.appendChild(td)
-
-	const actual = document.createElement('td')
-	actual.className = 'subheader actual'
-	actual.setAttribute('colspan', 1)
-	actual.innerText = 'Actual'
-	tr.appendChild(actual)
-
-	const budget = document.createElement('td')
-	budget.className = 'subheader budget'
-	budget.setAttribute('colspan', 1)
-	budget.innerText = 'Budget'
-	tr.appendChild(budget)
-
-	const diff = document.createElement('td')
-	diff.className = 'subheader budget'
-	diff.setAttribute('colspan', 1)
-	diff.innerText = 'Diff'
-	tr.appendChild(diff)
-
-	const percent = document.createElement('td')
-	percent.className = 'subheader budget'
-	percent.setAttribute('colspan', 1)
-	percent.innerText = '% Diff'
-	tr.appendChild(percent)
-
-	table.appendChild(tr)
-}
-
-//data[label], budget[label] label, sub, table, 5
-function sectionBudget(data, budget, label, sub, table, span, edit){
-	const tr = document.createElement('tr')
-	const td = document.createElement('td')
-	td.className = "subheader " + label
-	td.setAttribute("colspan", span)
-	td.innerText = label
-	const button = document.createElement('button')
-	button.setAttribute('type', 'button')
-	const buttonlabel = 'button' + label.replace(/ /g, '')
-	button.setAttribute('id', buttonlabel)
-	button.innerText = 'Hide'
-	button.onclick = function() {collapseRows(buttonlabel, label)}
-	console.log(button)
-	td.appendChild(button)
-	tr.appendChild(td)
-
-	table.appendChild(tr)
-
-	let subactual = 0
-	let subbudget = 0
-
-	const length = Object.keys(data).length
-	for (let i =0; i < length; i++){
-		const tbrow = document.createElement('tr')
-      	//sublabel for name of row
-		const tdlabel = document.createElement('td')
-		tdlabel.className = 'label'
-		let sublabel = Object.keys(data)[i]
-		tdlabel.innerText = sublabel
-
-		//need an edit and input
-		//actual value for row
-		const tdvalue = document.createElement('td')
-		
-		const identifier = sublabel.replace(/ /g, '') + table.getAttribute('id')
-		tdvalue.setAttribute('id', identifier)
-		let value = data[sublabel]
-		subactual += value
-		if (edit){
-			tdvalue.className = "value " + label + ' budget' +' edit'
+	      //value for row
+	      const tdvalue = document.createElement('td')
+	      const identifier = sublabel.replace(/ /g, '') + table.getAttribute('id')
+		  tdvalue.setAttribute('id', identifier)
+		  let value = data[sublabel]
+		  subtotal += value
+	      if (edit === undefined){
+		      tdvalue.innerText = value
+		      tdvalue.className = "value " + label
+		      //track subtotal
+		      // console.log('I am here')
+		      
+	      } else { 
+	      	//save button
+	      	// console.log('No, I am here')
+	      	tdvalue.className = "value " + label + ' edit'
 	      	const save = document.createElement('button')
 	      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
 	      	// save.setAttribute('id', buttonlabel)
@@ -254,7 +292,9 @@ function sectionBudget(data, budget, label, sub, table, span, edit){
 	      	save.onclick = function () {saveValue(identifier);}
 	      	save.innerText = 'Save'
 	      	save.setAttribute("id", "editbutton")
+	      	console.log(save)
 	      	tdvalue.appendChild(save)
+	      	console.log(tdvalue)
 
 	      	const inp = document.createElement('input')
 	      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
@@ -265,224 +305,700 @@ function sectionBudget(data, budget, label, sub, table, span, edit){
 	      	console.log(inp)
 	      	tdvalue.appendChild(inp)
 	      	console.log(tdvalue)
+	      	}
+	      //append to end of row
+	      tbrow.appendChild(tdlabel)
+	      tbrow.appendChild(tdvalue)
+	      table.appendChild(tbrow)
+	   }
+	   if (sub){
+	   	  const subrow = document.createElement('tr')
+	   	  const sublabel = document.createElement('td')
+	   	  sublabel.className = 'label'
+	   	  sublabel.innerText = 'Total ' + label 
+	   	  subrow.appendChild(sublabel)
 
-		} else {
-			tdvalue.className = "value " + label
-			tdvalue.innerText = value
+	   	  const subrowval = document.createElement('td')
+	   	  subrowval.className = "value " + label
+	   	  subrowval.setAttribute('id', sublabel.innerText.replace(/ /g, '') + table.getAttribute('id'))
+	   	  subrowval.innerText = subtotal
+	   	  subrow.appendChild(subrowval)
+	   	  table.appendChild(subrow)
+	   }
+	}
+
+	function collapseRows(id, key, table) {
+	   	const tobehidden = table.querySelectorAll('.value.' + key)
+	   	for (let i = 0; i < tobehidden.length; i++){
+	   		tobehidden[i].parentElement.classList.add("hidden");
+	   	}
+	   	console.log(key)
+	   	console.log(table)
+	   	const button = table.querySelector('#' + id)
+	   	console.log(button)
+	   	button.innerHTML = 'show'
+	   	button.onclick = function() {expandRows(id, key, table);}
+	}
+
+	function expandRows(id, key, table) {
+	   	const tobehidden = table.querySelectorAll('.value.' + key)
+	   	console.log(tobehidden)
+	   	for (let i = 0; i < tobehidden.length; i++){
+	   		tobehidden[i].parentElement.classList.remove("hidden");
+	   	}
+	   	console.log(key)
+	   	console.log(table)
+	   	const button = table.querySelector('#' + id)
+	   	console.log(button)
+	   	button.innerHTML = 'hide'
+	   	button.onclick = function() {collapseRows(id, key, table)}
+	}
+	/* End of private properties/functions */
+
+	fr.prototype = {
+
+		statementGenerator: function(data, id, sub, budget, edit){
+			//Use this to add a table.
+
+			const table = document.createElement('table')
+			table.setAttribute('id', id)
+
+			//header components
+			console.log("this is the budget argument")
+			console.log(budget)
+			if (budget === undefined || budget === null){
+				header(data, table, 2)	
+			} else {
+				header(data, table, 5)
+				budgetHeader(table)
+			}
+			
+			const sections = Object.keys(data).length
+			//for each subcomponent
+			for (let j = 1; j < sections; j++){
+		      let label = Object.keys(data)[j]
+		      if (budget === undefined || budget === null){
+		      	section(data[label], label, sub, table, 2, edit)	
+		      } else {
+		      	sectionBudget(data[label], budget[label], label, sub, table, 5, edit)
+		      }	 
+			}
+			return table
+		},
+		total: function(tblselect, label, operations, budget){
+			const table = document.querySelector('#' + tblselect)
+			const row = document.createElement('tr')
+			const rowLabel = document.createElement('td')
+			rowLabel.innerText = label
+			rowLabel.className = 'label'
+			row.appendChild(rowLabel)
+
+			const oplen = Object.keys(operations).length
+			console.log(oplen)
+			let total = 0
+			let totalbudg = 0
+			for (let i = 0; i < oplen; i++){
+				let operation = Object.keys(operations)[i]
+				let selector = 'Total' + operation.replace(/ /g, '') + tblselect
+				console.log(selector)
+				const val = parseInt(document.querySelector('#' + selector).innerText)
+				console.log("The value of the total is ")
+				console.log(val)
+
+				if (operations[operation] === 'add'){
+					total += val
+				} else {	
+					total -= val
+				}
+
+				if (budget){
+					let budgetselect = 'Total' + operation.replace(/ /g, '') + 'budget' +  tblselect
+					const budg = parseInt(document.querySelector('#' + budgetselect).innerText)
+					console.log(budg)
+
+					if (operations[operation] === 'add'){
+					totalbudg += budg
+					} else {	
+						totalbudg -= budg
+					}
+					}
+			}
+			const rowValue = document.createElement('td')
+			rowValue.className = 'value Total'
+			rowValue.innerText = total
+			rowValue.setAttribute('id', label.replace(/ /g, '') + tblselect)
+			row.appendChild(rowValue)
+			if (budget){
+				const rowBud = document.createElement('td')
+				rowBud.className = 'value Total budget'
+				rowBud.innerText = totalbudg
+				rowBud.setAttribute('id', label.replace(/ /g, '')+ "budget" + tblselect)
+				row.appendChild(rowBud)	
+
+				const rowDiff = document.createElement('td')
+				rowDiff.className = 'value Total budget'
+				rowDiff.innerText = total - totalbudg
+				rowDiff.setAttribute('id', label.replace(/ /g, '')+ "diff" + tblselect)
+				row.appendChild(rowDiff)	
+
+				const rowBudDiff = document.createElement('td')
+				rowBudDiff.className = 'value Total budget'
+				rowBudDiff.innerText = ((total - totalbudg) / totalbudg) * 100
+				rowBudDiff.setAttribute('id', label.replace(/ /g, '')+ "budgetdiff" + tblselect)
+				row.appendChild(rowBudDiff)
+			}
+			table.appendChild(row)
+		},
+		editTotal: function(tblselect, label, operations, budget){
+			const table = document.querySelector('#' + tblselect)
+			const oplen = Object.keys(operations).length
+			let total = 0
+			let totalbudg = 0
+			for (let i = 0; i < oplen; i++){
+				let operation = Object.keys(operations)[i]
+				let selector = 'Total' + operation.replace(/ /g, '') + tblselect
+				const val = parseInt(document.querySelector('#' + selector).innerText)
+				if (operations[operation] === 'add'){
+					total += val
+				} else {	
+					total -= val
+				}
+				if (budget){
+					let budgetselect = 'Total' + operation.replace(/ /g, '') + 'budget' +  tblselect
+					const budg = parseInt(document.querySelector('#' + budgetselect).innerText)
+					if (operations[operation] === 'add'){
+					totalbudg += budg
+					} else {	
+						totalbudg -= budg
+					}
+				}
+			}
+			const rows = table.querySelectorAll('.Total')
+			rows[0].innerText = total
+			if (budget){
+				rows[1].innerText = totalbudg
+				rows[2].innerText = total - totalbudg
+				rows[3].innerText = ((total - totalbudg) / totalbudg) * 100
+			}
+		},
+		draganddrop: function(label){
+			$(document).ready(function() {
+		    // Initialise the table
+		    $("#" + label).tableDnD({
+		      onDragClass: "drag"
+		      });
+			});	
 		}
+		// ,
+		// makeCircle: function(arg) {
+		// 	const circle = document.createElement('div')
+		// 	circle.style = 'width: 60px; height: 60px; border-radius: 50%; margin: 10px; background-color: Aqua;'
+		// 	const body = $('body') // using jQuery local variable
+		// 	body.append(circle)
+		// 	this.circles.push(circle)
+		// 	console.log(arg)
 
-		//need an edit and input
-		//budget value for row
-		const tdbudget = document.createElement('td')
+		// 	_incrementTotalCircles() // calling the private function
+		// },
+
+		// changeCirclesColor: function() {
+		// 	for (let i = 0; i < this.circles.length; i++) {
+		// 		this.circles[i].style.backgroundColor = 'darkmagenta'
+		// 	}
+		// },
+
+		// // public function that provides data of private properties
+		// getTotalCircles: function() { return _totalNumberOfCirclesEverCreated } 
+	}
+
+	/* Can do all other library setup below without conflicting with the global namespace */
+	// ...
+	// ...
+
+	// After setup:
+	// Add the CircleGenerator to the window object if it doesn't already exist.
+	global.fr = global.fr || fr
+
+})(window, window.document); // pass the global window object and jquery to the anonymous function. They will now be locally scoped inside of the function.
+
+
+
+// function editTotal(tblselect, label, operations, budget){
+// 	const table = document.querySelector('#' + tblselect)
+// 	// const row = document.createElement('tr')
+// 	// const rowLabel = document.createElement('td')
+// 	// rowLabel.innerText = label
+// 	// rowLabel.className = 'label'
+// 	// row.appendChild(rowLabel)
+
+// 	const oplen = Object.keys(operations).length
+// 	console.log(oplen)
+// 	let total = 0
+// 	let totalbudg = 0
+// 	for (let i = 0; i < oplen; i++){
+// 		let operation = Object.keys(operations)[i]
+// 		let selector = 'Total' + operation.replace(/ /g, '') + tblselect
+// 		console.log(selector)
+// 		const val = parseInt(document.querySelector('#' + selector).innerText)
+// 		console.log("The value of the total is ")
+// 		console.log(val)
+
+// 		if (operations[operation] === 'add'){
+// 			total += val
+// 		} else {	
+// 			total -= val
+// 		}
+
+// 		if (budget){
+// 			let budgetselect = 'Total' + operation.replace(/ /g, '') + 'budget' +  tblselect
+// 			const budg = parseInt(document.querySelector('#' + budgetselect).innerText)
+// 			console.log(budg)
+
+// 			if (operations[operation] === 'add'){
+// 			totalbudg += budg
+// 			} else {	
+// 				totalbudg -= budg
+// 			}
+// 		}
+// 	}
+// 	console.log(total)
+// 	console.log(totalbudg)
+// 	// const rowValue = document.createElement('td')
+// 	// rowValue.className = 'value Total'
+// 	const rows = table.querySelectorAll('.Total')
+// 	// const formatLabel = ('#' + label.replace(/ /g, '') + tblselect)
+// 	// const rowValue = document.querySelector('#' + formatLabel + tblselect)
+// 	// console.log(rowValue)
+// 	rows[0].innerText = total
+// 	// rowValue.setAttribute('id', label.replace(/ /g, '') + tblselect)
+// 	// row.appendChild(rowValue)
+// 	if (budget){
 		
-		const budgetID = sublabel.replace(/ /g, '') + "budget" + table.getAttribute('id')
-		tdbudget.setAttribute('id', budgetID)
-		let budg = budget[sublabel]
-		subbudget += budg
-		if (edit){
-			tdbudget.className = "value " + label + ' edit'
-	      	const saveBudg = document.createElement('button')
-	      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
-	      	// save.setAttribute('id', buttonlabel)
-	      	saveBudg.style.float = 'left'
-	      	saveBudg.onclick = function () {saveValue(budgetID);}
-	      	saveBudg.innerText = 'Save'
-	      	saveBudg.setAttribute("id", "editbutton")
-	      	tdbudget.appendChild(saveBudg)
+// 		// const rowBud = document.createElement('td')
+// 		// rowBud.className = 'value Total budget'
+// 		// const rows[0] = document.querySelector('#' + label.replace(/ /g, '')+ "budget" + tblselect)
+// 		rows[1].innerText = totalbudg
+// 		// rowBud.setAttribute('id', label.replace(/ /g, '')+ "budget" + tblselect)
+// 		// row.appendChild(rowBud)	
 
-	      	const input = document.createElement('input')
-	      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
-	      	// inp.setAttribute('id', inplabel)
-	      	input.setAttribute("placeholder", budg)
-	      	input.setAttribute("type", "text")
-	      	tdbudget.appendChild(input)
+// 		// const rowDiff = document.createElement('td')
+// 		// rowDiff.className = 'value Total budget'
+// 		// const rowDif = document.querySelector('#' + label.replace(/ /g, '')+ "diff" + tblselect)
+// 		rows[2].innerText = total - totalbudg
+// 		// rowDiff.setAttribute('id', label.replace(/ /g, '')+ "diff" + tblselect)
+// 		// row.appendChild(rowDiff)	
 
-		} else {
-			tdbudget.className = "value " + label + " budget"
-			tdbudget.innerText = budg
-		}
+// 		// const rowBudDiff = document.createElement('td')
+// 		// rowBudDiff.className = 'value Total budget'
+// 		// const rowBudDiff = document.querySelector('#' + label.replace(/ /g, '')+ "budgetdiff" + tblselect)
+// 		rows[3].innerText = ((total - totalbudg) / totalbudg) * 100
+// 		// rowBudDiff.setAttribute('id', label.replace(/ /g, '')+ "budgetdiff" + tblselect)
+// 		// row.appendChild(rowBudDiff)
+// 	}
+// 	// table.appendChild(row)
+// }
+
+// function total(tblselect, label, operations, budget){
+// 	const table = document.querySelector('#' + tblselect)
+// 	const row = document.createElement('tr')
+// 	const rowLabel = document.createElement('td')
+// 	rowLabel.innerText = label
+// 	rowLabel.className = 'label'
+// 	row.appendChild(rowLabel)
+
+// 	const oplen = Object.keys(operations).length
+// 	console.log(oplen)
+// 	let total = 0
+// 	let totalbudg = 0
+// 	for (let i = 0; i < oplen; i++){
+// 		let operation = Object.keys(operations)[i]
+// 		let selector = 'Total' + operation.replace(/ /g, '') + tblselect
+// 		console.log(selector)
+// 		const val = parseInt(document.querySelector('#' + selector).innerText)
+// 		console.log("The value of the total is ")
+// 		console.log(val)
+
+// 		if (operations[operation] === 'add'){
+// 			total += val
+// 		} else {	
+// 			total -= val
+// 		}
+
+// 		if (budget){
+// 			let budgetselect = 'Total' + operation.replace(/ /g, '') + 'budget' +  tblselect
+// 			const budg = parseInt(document.querySelector('#' + budgetselect).innerText)
+// 			console.log(budg)
+
+// 			if (operations[operation] === 'add'){
+// 			totalbudg += budg
+// 			} else {	
+// 				totalbudg -= budg
+// 			}
+// 			}
+// 	}
+// 	const rowValue = document.createElement('td')
+// 	rowValue.className = 'value Total'
+// 	rowValue.innerText = total
+// 	rowValue.setAttribute('id', label.replace(/ /g, '') + tblselect)
+// 	row.appendChild(rowValue)
+// 	if (budget){
+// 		const rowBud = document.createElement('td')
+// 		rowBud.className = 'value Total budget'
+// 		rowBud.innerText = totalbudg
+// 		rowBud.setAttribute('id', label.replace(/ /g, '')+ "budget" + tblselect)
+// 		row.appendChild(rowBud)	
+
+// 		const rowDiff = document.createElement('td')
+// 		rowDiff.className = 'value Total budget'
+// 		rowDiff.innerText = total - totalbudg
+// 		rowDiff.setAttribute('id', label.replace(/ /g, '')+ "diff" + tblselect)
+// 		row.appendChild(rowDiff)	
+
+// 		const rowBudDiff = document.createElement('td')
+// 		rowBudDiff.className = 'value Total budget'
+// 		rowBudDiff.innerText = ((total - totalbudg) / totalbudg) * 100
+// 		rowBudDiff.setAttribute('id', label.replace(/ /g, '')+ "budgetdiff" + tblselect)
+// 		row.appendChild(rowBudDiff)
+// 	}
+// 	table.appendChild(row)
+// }
+
+// function header(data, table, span) {
+//    const header = data["header"]
+//    console.log(header)
+//    const headerlength = Object.keys(header).length
+//    console.log(headerlength)
+//    for (let i = 0; i < headerlength; i++){
+//       let key = Object.keys(header)[i]
+//       console.log(header[key])
+
+//       //Do the work of creating header nodes
+//       let tr = document.createElement('tr')
+//       let th = document.createElement('th')
+//       th.className = "header"
+//       th.setAttribute("colspan", span)
+//       th.innerText = header[key]
+//       tr.appendChild(th)
+//       table.appendChild(tr)
+//    }
+// }
+
+// function budgetHeader(table){
+// 	const tr = document.createElement('tr')
+// 	const td = document.createElement('td')
+// 	td.className = 'subheader actual'
+// 	td.setAttribute('colspan', 1)
+// 	const button = document.createElement('button')
+// 	button.onclick = function() {collapseBudget();}
+// 	button.innerText = 'Hide'
+// 	button.setAttribute('id', 'hidebutton')
+// 	td.appendChild(button)
+// 	tr.appendChild(td)
+
+// 	const actual = document.createElement('td')
+// 	actual.className = 'subheader actual'
+// 	actual.setAttribute('colspan', 1)
+// 	actual.innerText = 'Actual'
+// 	tr.appendChild(actual)
+
+// 	const budget = document.createElement('td')
+// 	budget.className = 'subheader budget'
+// 	budget.setAttribute('colspan', 1)
+// 	budget.innerText = 'Budget'
+// 	tr.appendChild(budget)
+
+// 	const diff = document.createElement('td')
+// 	diff.className = 'subheader budget'
+// 	diff.setAttribute('colspan', 1)
+// 	diff.innerText = 'Diff'
+// 	tr.appendChild(diff)
+
+// 	const percent = document.createElement('td')
+// 	percent.className = 'subheader budget'
+// 	percent.setAttribute('colspan', 1)
+// 	percent.innerText = '% Diff'
+// 	tr.appendChild(percent)
+
+// 	table.appendChild(tr)
+// }
+
+// //data[label], budget[label] label, sub, table, 5
+// function sectionBudget(data, budget, label, sub, table, span, edit){
+// 	const tr = document.createElement('tr')
+// 	const td = document.createElement('td')
+// 	td.className = "subheader " + label
+// 	td.setAttribute("colspan", span)
+// 	td.innerText = label
+// 	const button = document.createElement('button')
+// 	button.setAttribute('type', 'button')
+// 	const buttonlabel = 'button' + label.replace(/ /g, '')
+// 	button.setAttribute('id', buttonlabel)
+// 	button.innerText = 'Hide'
+// 	button.onclick = function() {collapseRows(buttonlabel, label)}
+// 	console.log(button)
+// 	td.appendChild(button)
+// 	tr.appendChild(td)
+
+// 	table.appendChild(tr)
+
+// 	let subactual = 0
+// 	let subbudget = 0
+
+// 	const length = Object.keys(data).length
+// 	for (let i =0; i < length; i++){
+// 		const tbrow = document.createElement('tr')
+//       	//sublabel for name of row
+// 		const tdlabel = document.createElement('td')
+// 		tdlabel.className = 'label'
+// 		let sublabel = Object.keys(data)[i]
+// 		tdlabel.innerText = sublabel
+
+// 		//need an edit and input
+// 		//actual value for row
+// 		const tdvalue = document.createElement('td')
+		
+// 		const identifier = sublabel.replace(/ /g, '') + table.getAttribute('id')
+// 		tdvalue.setAttribute('id', identifier)
+// 		let value = data[sublabel]
+// 		subactual += value
+// 		if (edit){
+// 			tdvalue.className = "value " + label + ' budget' +' edit'
+// 	      	const save = document.createElement('button')
+// 	      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
+// 	      	// save.setAttribute('id', buttonlabel)
+// 	      	save.style.float = 'left'
+// 	      	save.onclick = function () {saveValue(identifier);}
+// 	      	save.innerText = 'Save'
+// 	      	save.setAttribute("id", "editbutton")
+// 	      	tdvalue.appendChild(save)
+
+// 	      	const inp = document.createElement('input')
+// 	      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
+// 	      	// inp.setAttribute('id', inplabel)
+// 	      	inp.setAttribute("placeholder", value)
+// 	      	inp.setAttribute("type", "text")
+	 
+// 	      	console.log(inp)
+// 	      	tdvalue.appendChild(inp)
+// 	      	console.log(tdvalue)
+
+// 		} else {
+// 			tdvalue.className = "value " + label
+// 			tdvalue.innerText = value
+// 		}
+
+// 		//need an edit and input
+// 		//budget value for row
+// 		const tdbudget = document.createElement('td')
+		
+// 		const budgetID = sublabel.replace(/ /g, '') + "budget" + table.getAttribute('id')
+// 		tdbudget.setAttribute('id', budgetID)
+// 		let budg = budget[sublabel]
+// 		subbudget += budg
+// 		if (edit){
+// 			tdbudget.className = "value " + label + ' edit'
+// 	      	const saveBudg = document.createElement('button')
+// 	      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
+// 	      	// save.setAttribute('id', buttonlabel)
+// 	      	saveBudg.style.float = 'left'
+// 	      	saveBudg.onclick = function () {saveValue(budgetID);}
+// 	      	saveBudg.innerText = 'Save'
+// 	      	saveBudg.setAttribute("id", "editbutton")
+// 	      	tdbudget.appendChild(saveBudg)
+
+// 	      	const input = document.createElement('input')
+// 	      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
+// 	      	// inp.setAttribute('id', inplabel)
+// 	      	input.setAttribute("placeholder", budg)
+// 	      	input.setAttribute("type", "text")
+// 	      	tdbudget.appendChild(input)
+
+// 		} else {
+// 			tdbudget.className = "value " + label + " budget"
+// 			tdbudget.innerText = budg
+// 		}
 
 
-		//diff value for row
-		const tddiff = document.createElement('td')
-		tddiff.className = "value " + label + " budget"
-		tddiff.setAttribute('id', sublabel.replace(/ /g, '')+ "diff" + table.getAttribute('id'))
-		let diff = value - budg
-		tddiff.innerText = diff
+// 		//diff value for row
+// 		const tddiff = document.createElement('td')
+// 		tddiff.className = "value " + label + " budget"
+// 		tddiff.setAttribute('id', sublabel.replace(/ /g, '')+ "diff" + table.getAttribute('id'))
+// 		let diff = value - budg
+// 		tddiff.innerText = diff
 
-		//diff % value for row
-		const tdperc = document.createElement('td')
-		tdperc.className = "value " + label + " budget"
-		tdperc.setAttribute('id', sublabel.replace(/ /g, '')+ "budgetdiff" + table.getAttribute('id'))
-		let diffperc = diff / budg * 100
-		console.log("this si the diffperc")
-		console.log(diffperc)
-		tdperc.innerText = diffperc
+// 		//diff % value for row
+// 		const tdperc = document.createElement('td')
+// 		tdperc.className = "value " + label + " budget"
+// 		tdperc.setAttribute('id', sublabel.replace(/ /g, '')+ "budgetdiff" + table.getAttribute('id'))
+// 		let diffperc = diff / budg * 100
+// 		console.log("this si the diffperc")
+// 		console.log(diffperc)
+// 		tdperc.innerText = diffperc
 
-		//append to end of row
-		tbrow.appendChild(tdlabel)
-		tbrow.appendChild(tdvalue)
-		tbrow.appendChild(tdbudget)
-		tbrow.appendChild(tddiff)
-		tbrow.appendChild(tdperc)
-		table.appendChild(tbrow)
-	}
-	if (sub){
-   	  const subrow = document.createElement('tr')
-   	  const sublabel = document.createElement('td')
-   	  sublabel.className = 'label'
-   	  sublabel.innerText = 'Total ' + label 
-   	  subrow.appendChild(sublabel)
+// 		//append to end of row
+// 		tbrow.appendChild(tdlabel)
+// 		tbrow.appendChild(tdvalue)
+// 		tbrow.appendChild(tdbudget)
+// 		tbrow.appendChild(tddiff)
+// 		tbrow.appendChild(tdperc)
+// 		table.appendChild(tbrow)
+// 	}
+// 	if (sub){
+//    	  const subrow = document.createElement('tr')
+//    	  const sublabel = document.createElement('td')
+//    	  sublabel.className = 'label'
+//    	  sublabel.innerText = 'Total ' + label 
+//    	  subrow.appendChild(sublabel)
 
-   	  const subrowval = document.createElement('td')
-   	  subrowval.className = "value " + label
-   	  subrowval.setAttribute('id', sublabel.innerText.replace(/ /g, '') + table.getAttribute('id'))
-   	  subrowval.innerText = subactual
-   	  subrow.appendChild(subrowval)
+//    	  const subrowval = document.createElement('td')
+//    	  subrowval.className = "value " + label
+//    	  subrowval.setAttribute('id', sublabel.innerText.replace(/ /g, '') + table.getAttribute('id'))
+//    	  subrowval.innerText = subactual
+//    	  subrow.appendChild(subrowval)
 
-   	  const subrowbudg = document.createElement('td')
-   	  subrowbudg.className = "value " + label + " budget"
-   	  subrowbudg.setAttribute('id', sublabel.innerText.replace(/ /g, '') + "budget" + table.getAttribute('id'))
-   	  subrowbudg.innerText = subbudget
-   	  subrow.appendChild(subrowbudg)
+//    	  const subrowbudg = document.createElement('td')
+//    	  subrowbudg.className = "value " + label + " budget"
+//    	  subrowbudg.setAttribute('id', sublabel.innerText.replace(/ /g, '') + "budget" + table.getAttribute('id'))
+//    	  subrowbudg.innerText = subbudget
+//    	  subrow.appendChild(subrowbudg)
 
-   	  const subrowdiff = document.createElement('td')
-   	  subrowdiff.className = "value " + label + " budget"
-   	  subrowdiff.setAttribute('id', sublabel.innerText.replace(/ /g, '') + "diff" + table.getAttribute('id'))
-   	  subrowdiff.innerText = subactual - subbudget
-   	  subrow.appendChild(subrowdiff)
+//    	  const subrowdiff = document.createElement('td')
+//    	  subrowdiff.className = "value " + label + " budget"
+//    	  subrowdiff.setAttribute('id', sublabel.innerText.replace(/ /g, '') + "diff" + table.getAttribute('id'))
+//    	  subrowdiff.innerText = subactual - subbudget
+//    	  subrow.appendChild(subrowdiff)
 
-   	  const subrowperc = document.createElement('td')
-   	  subrowperc.className = "value " + label + " budget"
-   	  subrowperc.setAttribute('id', sublabel.innerText.replace(/ /g, '') + "budgetdiff" + table.getAttribute('id'))
-   	  subrowperc.innerText = ((subactual - subbudget) / subbudget) * 100
-   	  subrow.appendChild(subrowperc)
+//    	  const subrowperc = document.createElement('td')
+//    	  subrowperc.className = "value " + label + " budget"
+//    	  subrowperc.setAttribute('id', sublabel.innerText.replace(/ /g, '') + "budgetdiff" + table.getAttribute('id'))
+//    	  subrowperc.innerText = ((subactual - subbudget) / subbudget) * 100
+//    	  subrow.appendChild(subrowperc)
 
-   	  table.appendChild(subrow)
-   }
-}
+//    	  table.appendChild(subrow)
+//    }
+// }
 
-function section(data, label, sub, table, span, edit){
-   //Create the subheader label
-   const tr = document.createElement('tr')
-   const td = document.createElement('td')
-   td.className = "subheader " + label
-   td.setAttribute("colspan", span)
-   td.innerText = label
-   const button = document.createElement('button')
-   button.setAttribute('type', 'button')
-   const buttonlabel = 'button' + label.replace(/ /g, '')
-   button.setAttribute('id', buttonlabel)
-   button.innerText = 'Hide'
-   button.onclick = function() {collapseRows(buttonlabel, label)}
-   console.log(button)
-   td.appendChild(button)
-   tr.appendChild(td)
+// function section(data, label, sub, table, span, edit){
+//    //Create the subheader label
+//    const tr = document.createElement('tr')
+//    const td = document.createElement('td')
+//    td.className = "subheader " + label
+//    td.setAttribute("colspan", span)
+//    td.innerText = label
+//    const button = document.createElement('button')
+//    button.setAttribute('type', 'button')
+//    const buttonlabel = 'button' + label.replace(/ /g, '')
+//    button.setAttribute('id', buttonlabel)
+//    button.innerText = 'Hide'
+//    button.onclick = function() {collapseRows(buttonlabel, label)}
+//    console.log(button)
+//    td.appendChild(button)
+//    tr.appendChild(td)
 
-   table.appendChild(tr)
+//    table.appendChild(tr)
 
-   //tally section subtotal
-   let subtotal = 0
+//    //tally section subtotal
+//    let subtotal = 0
 
-   console.log(data[label])
-   const length = Object.keys(data).length
-   console.log(length)
-   for (let i = 0; i < length; i++){
-      //row for the new label and value
-      const tbrow = document.createElement('tr')
-      //sublabel for name of row
-      const tdlabel = document.createElement('td')
-      tdlabel.className = 'label'
-      let sublabel = Object.keys(data)[i]
-      tdlabel.innerText = sublabel
+//    console.log(data[label])
+//    const length = Object.keys(data).length
+//    console.log(length)
+//    for (let i = 0; i < length; i++){
+//       //row for the new label and value
+//       const tbrow = document.createElement('tr')
+//       //sublabel for name of row
+//       const tdlabel = document.createElement('td')
+//       tdlabel.className = 'label'
+//       let sublabel = Object.keys(data)[i]
+//       tdlabel.innerText = sublabel
 
-      //value for row
-      const tdvalue = document.createElement('td')
-      const identifier = sublabel.replace(/ /g, '') + table.getAttribute('id')
-	  tdvalue.setAttribute('id', identifier)
-	  let value = data[sublabel]
-	  subtotal += value
-      if (edit === undefined){
-	      tdvalue.innerText = value
-	      tdvalue.className = "value " + label
-	      //track subtotal
-	      // console.log('I am here')
+//       //value for row
+//       const tdvalue = document.createElement('td')
+//       const identifier = sublabel.replace(/ /g, '') + table.getAttribute('id')
+// 	  tdvalue.setAttribute('id', identifier)
+// 	  let value = data[sublabel]
+// 	  subtotal += value
+//       if (edit === undefined){
+// 	      tdvalue.innerText = value
+// 	      tdvalue.className = "value " + label
+// 	      //track subtotal
+// 	      // console.log('I am here')
 	      
-      } else { 
-      	//save button
-      	// console.log('No, I am here')
-      	tdvalue.className = "value " + label + ' edit'
-      	const save = document.createElement('button')
-      	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
-      	// save.setAttribute('id', buttonlabel)
-      	save.style.float = 'left'
-      	save.onclick = function () {saveValue(identifier);}
-      	save.innerText = 'Save'
-      	save.setAttribute("id", "editbutton")
-      	console.log(save)
-      	tdvalue.appendChild(save)
-      	console.log(tdvalue)
+//       } else { 
+//       	//save button
+//       	// console.log('No, I am here')
+//       	tdvalue.className = "value " + label + ' edit'
+//       	const save = document.createElement('button')
+//       	// const buttonlabel = sublabel.replace(/ /g, '') + 'button' + table.getAttribute('id')
+//       	// save.setAttribute('id', buttonlabel)
+//       	save.style.float = 'left'
+//       	save.onclick = function () {saveValue(identifier);}
+//       	save.innerText = 'Save'
+//       	save.setAttribute("id", "editbutton")
+//       	console.log(save)
+//       	tdvalue.appendChild(save)
+//       	console.log(tdvalue)
 
-      	const inp = document.createElement('input')
-      	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
-      	// inp.setAttribute('id', inplabel)
-      	inp.setAttribute("placeholder", value)
-      	inp.setAttribute("type", "text")
+//       	const inp = document.createElement('input')
+//       	// const inplabel = sublabel.replace(/ /g, '') + 'form' + table.getAttribute('id')
+//       	// inp.setAttribute('id', inplabel)
+//       	inp.setAttribute("placeholder", value)
+//       	inp.setAttribute("type", "text")
  
-      	console.log(inp)
-      	tdvalue.appendChild(inp)
-      	console.log(tdvalue)
-      	}
-      //append to end of row
-      tbrow.appendChild(tdlabel)
-      tbrow.appendChild(tdvalue)
-      table.appendChild(tbrow)
-   }
-   if (sub){
-   	  const subrow = document.createElement('tr')
-   	  const sublabel = document.createElement('td')
-   	  sublabel.className = 'label'
-   	  sublabel.innerText = 'Total ' + label 
-   	  subrow.appendChild(sublabel)
+//       	console.log(inp)
+//       	tdvalue.appendChild(inp)
+//       	console.log(tdvalue)
+//       	}
+//       //append to end of row
+//       tbrow.appendChild(tdlabel)
+//       tbrow.appendChild(tdvalue)
+//       table.appendChild(tbrow)
+//    }
+//    if (sub){
+//    	  const subrow = document.createElement('tr')
+//    	  const sublabel = document.createElement('td')
+//    	  sublabel.className = 'label'
+//    	  sublabel.innerText = 'Total ' + label 
+//    	  subrow.appendChild(sublabel)
 
-   	  const subrowval = document.createElement('td')
-   	  subrowval.className = "value " + label
-   	  subrowval.setAttribute('id', sublabel.innerText.replace(/ /g, '') + table.getAttribute('id'))
-   	  subrowval.innerText = subtotal
-   	  subrow.appendChild(subrowval)
-   	  table.appendChild(subrow)
-   }
-}
+//    	  const subrowval = document.createElement('td')
+//    	  subrowval.className = "value " + label
+//    	  subrowval.setAttribute('id', sublabel.innerText.replace(/ /g, '') + table.getAttribute('id'))
+//    	  subrowval.innerText = subtotal
+//    	  subrow.appendChild(subrowval)
+//    	  table.appendChild(subrow)
+//    }
+// }
 
 
-function statementGenerator(data, id, sub, budget, edit){
-	//Use this to add a table.
+// function statementGenerator(data, id, sub, budget, edit){
+// 	//Use this to add a table.
 
-	const table = document.createElement('table')
-	table.setAttribute('id', id)
+// 	const table = document.createElement('table')
+// 	table.setAttribute('id', id)
 
-	//header components
-	console.log("this is the budget argument")
-	console.log(budget)
-	if (budget === undefined || budget === null){
-		header(data, table, 2)	
-	} else {
-		header(data, table, 5)
-		budgetHeader(table)
-	}
+// 	//header components
+// 	console.log("this is the budget argument")
+// 	console.log(budget)
+// 	if (budget === undefined || budget === null){
+// 		header(data, table, 2)	
+// 	} else {
+// 		header(data, table, 5)
+// 		budgetHeader(table)
+// 	}
 	
-	const sections = Object.keys(data).length
-	//for each subcomponent
-	for (let j = 1; j < sections; j++){
-      let label = Object.keys(data)[j]
-      if (budget === undefined || budget === null){
-      	section(data[label], label, sub, table, 2, edit)	
-      } else {
-      	sectionBudget(data[label], budget[label], label, sub, table, 5, edit)
-      }	 
-	}
-	return table
-}
+// 	const sections = Object.keys(data).length
+// 	//for each subcomponent
+// 	for (let j = 1; j < sections; j++){
+//       let label = Object.keys(data)[j]
+//       if (budget === undefined || budget === null){
+//       	section(data[label], label, sub, table, 2, edit)	
+//       } else {
+//       	sectionBudget(data[label], budget[label], label, sub, table, 5, edit)
+//       }	 
+// 	}
+// 	return table
+// }
 
 function collapseBudget () {
    	console.log("button clicked - hide")
@@ -513,29 +1029,33 @@ function expandBudget () {
    	console.log(show)
 }
 
-function collapseRows(id, key) {
-   	const tobehidden = document.querySelectorAll('.value.' + key)
-   	for (let i = 0; i < tobehidden.length; i++){
-   		tobehidden[i].parentElement.classList.add("hidden");
-   	}
-   	console.log(key)
-   	const button = document.querySelector('#' + id)
-   	console.log(button)
-   	button.innerHTML = 'show'
-   	button.onclick = function() {expandRows(id, key);}
-}
+// //add table label to this so I can just modify the table
+// function collapseRows(id, key, table) {
+//    	const tobehidden = table.querySelectorAll('.value.' + key)
+//    	for (let i = 0; i < tobehidden.length; i++){
+//    		tobehidden[i].parentElement.classList.add("hidden");
+//    	}
+//    	console.log(key)
+//    	console.log(table)
+//    	const button = table.querySelector('#' + id)
+//    	console.log(button)
+//    	button.innerHTML = 'show'
+//    	button.onclick = function() {expandRows(id, key, table);}
+// }
 
-function expandRows(id, key) {
-   	const tobehidden = document.querySelectorAll('.value.' + key)
-   	for (let i = 0; i < tobehidden.length; i++){
-   		tobehidden[i].parentElement.classList.remove("hidden");
-   	}
-   	console.log(key)
-   	const button = document.querySelector('#' + id)
-   	console.log(button)
-   	button.innerHTML = 'hide'
-   	button.onclick = function() {collapseRows(id, key)}
-}
+// function expandRows(id, key, table) {
+//    	const tobehidden = table.querySelectorAll('.value.' + key)
+//    	console.log(tobehidden)
+//    	for (let i = 0; i < tobehidden.length; i++){
+//    		tobehidden[i].parentElement.classList.remove("hidden");
+//    	}
+//    	console.log(key)
+//    	console.log(table)
+//    	const button = table.querySelector('#' + id)
+//    	console.log(button)
+//    	button.innerHTML = 'hide'
+//    	button.onclick = function() {collapseRows(id, key, table)}
+// }
 
 function formatValues () {
 	let x = document.querySelectorAll(".value");
@@ -744,7 +1264,7 @@ function addSubComponents(data, label, cat, table){
 	collapseButton.style.float = 'right'
 	const buttonlabel =  label.replace(/ /g, '') + "sub"
 	collapseButton.setAttribute('id', buttonlabel)
-	collapseButton.onclick = function() {collapseRows(buttonlabel, label.replace(/ /g, ''));}
+	collapseButton.onclick = function() {collapseRows(buttonlabel, label.replace(/ /g, ''), table);}
 	collapseButton.innerText = 'Hide'
 	root.parentElement.querySelector('.label').appendChild(collapseButton)
 
@@ -780,14 +1300,14 @@ function addSubComponents(data, label, cat, table){
 
 //Note - using an external library and JQuery for this. It is not a significant part of my library, but it makes 
 //it more usable.
-function draganddrop(label){
-	$(document).ready(function() {
-    // Initialise the table
-    $("#" + label).tableDnD({
-      onDragClass: "drag"
-      });
-	});	
-}
+// function draganddrop(label){
+// 	$(document).ready(function() {
+//     // Initialise the table
+//     $("#" + label).tableDnD({
+//       onDragClass: "drag"
+//       });
+// 	});	
+// }
 
 function insertAfter(sibling, element) {
   sibling.parentElement.insertBefore(element, sibling.nextSibling);
