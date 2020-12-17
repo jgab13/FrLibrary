@@ -117,7 +117,7 @@ function createBudget(){
 		"Income": "add",
 		"Expenses": "sub",
 	})
-	// addSubComponents(Income, "Income 1", "Income", table)
+	addSubComponents(Income, "Income 1", "Income", table)
 	rateCalculor(0.3, "Net Income", table, "Income tax to pay")
 }
 
@@ -162,7 +162,7 @@ function onLoadFunctions() {
 	formatDifferences();
 	checkDifferences(10, 'budgetdiff', "#1CAC78", "#fd5c63")
 	addLink("Total Income");
-	// addLink("Cash");
+	addLink("Cash");
 	checkLinkedValues("Total Income", "Total income does not match across statements");
 }
 
@@ -188,7 +188,7 @@ window.addEventListener("load", () =>{
 	createBS();
 	createBudget();
 	ManualSlideShow();
-	// 	slideshow()
+	slideshow()
 	onLoadFunctions();
 })
 
