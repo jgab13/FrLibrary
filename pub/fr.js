@@ -779,61 +779,61 @@
 			const elementToModify = elements[elements.length - 1].parentElement.querySelector('.label')
 			elementToModify.innerHTML = "<a href=#" + elements[0].getAttribute('id') + ">" + elementToModify.innerText
 		},
-		checkLinkedValues: function(label, message){
-			const formatLabel = label.replace(/ /g, '')
-			console.log(formatLabel)
-			const diffsToCheck = document.querySelectorAll("[id*=" + formatLabel + "]")
-			console.log(diffsToCheck)
-			let val = null
-			let condition = false;
-			for (let i = 0; i < diffsToCheck.length; i++){
-				if (val === null){
-					val = parseFloat(diffsToCheck[i].innerHTML)
-					console.log(val)
-				} else {
-					if (!diffsToCheck[i].getAttribute('id').includes('diff') && 
-						!diffsToCheck[i].getAttribute('id').includes('budget') &&
-						!diffsToCheck[i].getAttribute('id').includes('button') &&
-						parseFloat(diffsToCheck[i].innerHTML) !== val) {
-						condition = true
-						break;
-					} 
-				}
-			}
-			if (condition){
-				for (let j = 0; j < diffsToCheck.length; j++){
-					if (!diffsToCheck[j].getAttribute('id').includes('diff') && 
-						!diffsToCheck[j].getAttribute('id').includes('budget') &&
-						!diffsToCheck[j].getAttribute('id').includes('button')){
-						let parent = diffsToCheck[j].parentElement
-						console.log(parent)
-						if (parent.querySelector('div') === null && !(parent.querySelector('a') === null)){
-							let container = document.createElement('div')
-							container.style.color = 'red'
-							container.style.float = 'right'
-							let stmt = document.createTextNode(message)
-							container.append(stmt)
-							parent.querySelector('.label').append(container)	
-						}			
-					}
-				}	
-			}
-			else {
-				for (let m = 0; m < diffsToCheck.length; m++){
-					if (!diffsToCheck[m].getAttribute('id').includes('diff') && 
-						!diffsToCheck[m].getAttribute('id').includes('budget') &&
-						!diffsToCheck[m].getAttribute('id').includes('button')){
-						let parent = diffsToCheck[m].parentElement
-						if (parent.querySelector('div') !== null){
-							console.log('div exists')
-							const div = parent.querySelector('div')
-							console.log(div)
-							parent.querySelector('.label').removeChild(div)
-						} 				
-					}
-				}
-			}
-		},
+		// checkLinkedValues: function(label, message){
+		// 	const formatLabel = label.replace(/ /g, '')
+		// 	console.log(formatLabel)
+		// 	const diffsToCheck = document.querySelectorAll("[id*=" + formatLabel + "]")
+		// 	console.log(diffsToCheck)
+		// 	let val = null
+		// 	let condition = false;
+		// 	for (let i = 0; i < diffsToCheck.length; i++){
+		// 		if (val === null){
+		// 			val = parseFloat(diffsToCheck[i].innerHTML)
+		// 			console.log(val)
+		// 		} else {
+		// 			if (!diffsToCheck[i].getAttribute('id').includes('diff') && 
+		// 				!diffsToCheck[i].getAttribute('id').includes('budget') &&
+		// 				!diffsToCheck[i].getAttribute('id').includes('button') &&
+		// 				parseFloat(diffsToCheck[i].innerHTML) !== val) {
+		// 				condition = true
+		// 				break;
+		// 			} 
+		// 		}
+		// 	}
+		// 	if (condition){
+		// 		for (let j = 0; j < diffsToCheck.length; j++){
+		// 			if (!diffsToCheck[j].getAttribute('id').includes('diff') && 
+		// 				!diffsToCheck[j].getAttribute('id').includes('budget') &&
+		// 				!diffsToCheck[j].getAttribute('id').includes('button')){
+		// 				let parent = diffsToCheck[j].parentElement
+		// 				console.log(parent)
+		// 				if (parent.querySelector('div') === null && !(parent.querySelector('a') === null)){
+		// 					let container = document.createElement('div')
+		// 					container.style.color = 'red'
+		// 					container.style.float = 'right'
+		// 					let stmt = document.createTextNode(message)
+		// 					container.append(stmt)
+		// 					parent.querySelector('.label').append(container)	
+		// 				}			
+		// 			}
+		// 		}	
+		// 	}
+		// 	else {
+		// 		for (let m = 0; m < diffsToCheck.length; m++){
+		// 			if (!diffsToCheck[m].getAttribute('id').includes('diff') && 
+		// 				!diffsToCheck[m].getAttribute('id').includes('budget') &&
+		// 				!diffsToCheck[m].getAttribute('id').includes('button')){
+		// 				let parent = diffsToCheck[m].parentElement
+		// 				if (parent.querySelector('div') !== null){
+		// 					console.log('div exists')
+		// 					const div = parent.querySelector('div')
+		// 					console.log(div)
+		// 					parent.querySelector('.label').removeChild(div)
+		// 				} 				
+		// 			}
+		// 		}
+		// 	}
+		// },
 		createAutomaticSlideShow: function(root, selector, slides, speed){
 			const anchor = document.querySelector(root);
 			const container = document.createElement('div')

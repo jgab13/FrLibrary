@@ -62,7 +62,7 @@ const BSbudget = {
 
 const person = {
 	header: {
-		"statement": "Jonathan's budget",
+		"statement": "Jonathan's Income Statement",
 		"date": "Dec 31, 2020"
 	},
 	Income: {
@@ -78,11 +78,6 @@ const person = {
 }
 
 
-const Income = {
-		"Income sub 1": 40,
-		"Income sub 2": 60
-}
-
 const f = new fr()
 const fa = new fr()
 const fb = new fr()
@@ -90,17 +85,22 @@ const fc = new fr()
 
 function createBS(){
 	
-	const table = f.statementGenerator(BSdata, "tb1", true, BSbudget, true)
+	const table = f.statementGenerator(BSdata, "tb1", true)
 	// const table = NotFillableStatement(BSdata, "tb1", true)
 	f.draganddrop("tb1")
 	console.log(table)
 	const stmt = document.querySelector('#stmt')
 	console.log(stmt)
 	stmt.appendChild(table)
+	f.addSubComponents({
+		"Cash Equivalents": 40,
+		"Treasury Bills": 60
+		}, "Cash", "Assets", table)
 	f.total("tb1", "Liabilities + Equity", {
 		"Liabilities": "add",
-		"Equity": "add",
-	}, true)
+		"Equity": "add"
+	})
+	// f.rateCalculor(0.3, "Long term Debt", table, "Interest to pay")
 	// total("tb1", "Liabilities + Equity", {
 	// 	"Liabilities": "add",
 	// 	"Equity": "add",
@@ -127,8 +127,7 @@ function createBudget(){
 		"Expenses": "sub",
 	})
 	fa.draganddrop("tb2")
-	fa.addSubComponents(Income, "Income 1", "Income", table)
-	fa.rateCalculor(0.3, "Net Income", table, "Income tax to pay")
+	// fa.rateCalculor(0.3, "Net Income", table, "Income tax to pay")
 }
 
 
@@ -174,8 +173,9 @@ function onLoadFunctions() {
 	f.formatDifferences();
 	f.checkDifferences(10,"#1CAC78", "#fd5c63")
 	f.addLink("Total Income");
-	f.addLink("Cash");
-	f.checkLinkedValues("Total Income", "Total income does not match across statements");
+	f.addLink("Total Expenses");
+	// f.addLink("Cash");
+	// f.checkLinkedValues("Total Income", "Total income does not match across statements");
 }
 
 function onChangeFunctions() {
@@ -183,10 +183,10 @@ function onChangeFunctions() {
 		"Income": "add",
 		"Expenses": "sub",
 	})
-	f.editTotal("tb1", "Liabilities + Equity", {
-		"Liabilities": "add",
-		"Equity": "add",
-	}, true)
+	// f.editTotal("tb1", "Liabilities + Equity", {
+	// 	"Liabilities": "add",
+	// 	"Equity": "add",
+	// })
 	f.checkDifferences(10,"#1CAC78", "#fd5c63")
 	f.formatDifferences();
 }

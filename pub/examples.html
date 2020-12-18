@@ -3,55 +3,53 @@
  <head>
  	<meta charset="utf-8">
     <title>Examples</title>
-    <link rel="stylesheet" type="text/css" href="examples.css">
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="fr.css">
  	<script type="text/javascript" src="fr.js"></script>
  	<script type="text/javascript" src="examples.js"></script>
  </head>
-	 <style>
-		.btn-group button {
-		  background-color: #4CAF50; /* Green background */
-		  border: 1px solid green; /* Green border */
-		  color: white; /* White text */
-		  padding: 10px 19.5px; /* Some padding */
-		  cursor: pointer; /* Pointer/hand icon */
-		  float: left; /* Float the buttons side by side */
-		  margin-left: 62px;
-		  margin-bottom: 10px;
-		}
-
-		/* Clear floats (clearfix hack) */
-		.btn-group:after {
-		  content: "";
-		  clear: both;
-		  display: table;
-		}
-
-		.btn-group button:not(:last-child) {
-		  border-right: none; /* Prevent double borders */
-		}
-
-		/* Add a background color on hover */
-		.btn-group button:hover {
-		  background-color: #3e8e41;
-		}
-	</style>
  <body>
- 	<div class="exampleHeader"> This is a demo of the fr library. Please click each of the buttons below to generate each financial report. Read the blurb underneath the report to understand the fr library functionality being used by that report. Refresh the page after clicking each button to return to the blank screen to select a new button.</div>
-	<div class="btn-group">
-	  <button onClick='createBS()'>Balance Sheet</button>
-	  <button onClick='createIS()'>Income Statement</button>
-	  <button onClick='createCF()'>Cashflow Statement</button>
-	  <button onClick='createES()'>Equity Statement</button>
+ 	<div class="document">
+    <div class="documentwrapper">
+    <div class="bodywrapper">
+    <div class="body" role="main">
+    <div class="section" id="api">
+	<h1>fr.js Examples</h1>
+
+		<p>This is the basic format of the data used to generate tabular reports. The header components are required. The remaining subheadings and data can be customized, but the values must be numbers.</p>
+		<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">BSdata</span> <span class="o">=</span><span class="n">{header: {
+			"company": "My Company",
+			"statement": "Balance Sheet",
+			"date": "Dec 31, 2020"
+			},
+		Assets: {
+			"Cash": 100,
+			"Accounts Receivable": 200,
+			"PPE": 300,
+			"Other Assets": 200
+		},
+		Liabilities: {
+			"Accounts Payable": 200,
+			"Long term Debt": 400
+		},
+		Equity: {
+			"Retained Earnings": 100,
+			"Outstanding Shares": 100
+		}};</span></pre></div>
+		</div>
+		<p>The first example below generates a non-editable balance sheet. The subtotals and totals have been calculated. Additionally, a cash subcomponent has been added. The rows of the subcomponent can be hidden or shown by clicking the appropriate buttons. Lastly, the table rows can be dragged and dropped to rearrange the table row order.</p>
+		<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">f</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span><span class="p">();</span><span class="n"> //instantiates fr object.</span><br><br><span class="n">const</span> <span class="n">table</span> <span class="o">=</span> <span class="n">statementGenerator</span><span class="p">(</span><span class="n">BSdata, "tb1", true</span><span class="p">);</span><span class="n"> //Generate table with hide/show buttons.</span> <span class="n"><br><br><span class="n">f.draganddrop</span><span class="p">(</span><span class="n">"tb1"</span><span class="p">);</span><span class="n"> //Enables drag and drop functionality</span> <span class="n"><br><br><span class="n">f.addSubComponents</span><span class="p">(</span><span class="n">{"Cash Equivalents": 40,"Treasury Bills": 60},"Cash","Assets", table</span><span class="p">);</span><br><span class="n">//This adds a subcomponents underneath the cash row in the table. Notice that the first</span><br><span class="n">argument must contain labels and values in a precise format.<span class="n"><br><br><span class="n">f.total</span><span class="p">(</span><span class="n">"tb1","Liabilities + Equity", {"Liabilities": "add","Equity": "add"}</span><span class="p">);</span><br><span class="n">//This computes the total for tb1 with the label Liabilities + Equity. Notice that the operations </span><br><span class="n">argument must contain labels (Liabilities, Equity) in the table and operations add or sub.<span class="n"><br></pre></div>
 	</div>
-	<div id='head'></div>
-	<div id='stmt'></div>
-	<div id="stmt2"></div>
-	<div id="slideshow"></div>
-	<div id="slideshow2"></div>
-	<div class='exampleHeader' id='footer'></div>
+	<div class="divide" id='stmt'></div>
+		<p>The second example below generates an editable income sheet. The subtotals and totals have been calculated, with the net income label as the total. Links have been added to the total income and total expenses. If income and expenses are edited, the subtotals and totals will edit. If they do not match across tables, a red message will appear notifying the user that the balances do not match. Functions similar to above were excluded for the code snippet below.</p>
+		<div class="highlight-default notranslate"><div class="highlight"><pre><span class="n">const</span> <span class="n">table</span> <span class="o">=</span> <span class="n">statementGenerator</span><span class="p">(</span><span class="n">person, "tb2", true, null, true</span><span class="p">);</span><span class="n"> //Generate table with data person,</span><br><span class="n">similar to BSdata above. The budget and edit flags were added.</span> <br><br><span class="n">f.addLink</span><span class="p">(</span><span class="n">"Total Income"</span><span class="p">);</span><span class="n"> //Adds a link to any table with the row Total Income.</span> <span class="n"><br><br><span class="n">f.addLink</span><span class="p">(</span><span class="n">"Total Expenses"</span><span class="p">);</span><span class="n"> //Adds a link to any table with the row Total Expenses.</span><br><span class="n">//When values check, links will be validated. A message will appear indicating that the</span><br><span class="n">//values do not match across statements.</span> <span class="n"></pre></div>
+	</div>
+	<div class="divide" id="stmt2"></div>
+	<div class="divide" id="slideshow"></div>
+	<div class="divide" id="slideshow2"></div>
+	</div></div></div></div>
  	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
  	<script src="https://cdnjs.cloudflare.com/ajax/libs/TableDnD/0.9.1/jquery.tablednd.js" integrity="sha256-d3rtug+Hg1GZPB7Y/yTcRixO/wlI78+2m08tosoRn7A=" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
  </body>
 </html>

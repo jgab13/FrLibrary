@@ -2,6 +2,11 @@
 
 /* -- page layout ----------------------------------------------------------- */
 
+.divide{
+    padding: 20px;
+    margin-left: 10%;
+}
+
 body {
     font-family: Georgia, serif;
     font-size: 17px;

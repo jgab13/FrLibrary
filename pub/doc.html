@@ -36,6 +36,22 @@
 <div class="toctree-wrapper compound">
 </div>
 <div class="section" id="api">
+<h2>Getting started</h2>
+<p>To use this library, add the following links and scripts to your html files.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span class="p"><</span><span class="nt">link</span><span class="na"> rel</span><span class="o">=</span><span class="n">"stylesheet"</span><span class="na"> type</span><span class="o">=</span><span class="n">"text/css"</span><span class="na"> href</span><span class="o">=</span><span class="n">"fr.css"</span><span class="p">></span>
+<span class="p"><</span><span class="nt">script</span><span class="na"> type</span><span class="o">=</span><span class="n">"text/javascript"</span><span class="na"> src</span><span class="o">=</span><span class="n">"fr.js"</span><span class="p"><</span><span class="p">/</span><span class="nt">script</span><span class="p">></span>
+
+<span class="p"><</span><span class="nt">script</span><span class="na"> src</span><span class="o">=</span><span class="n">"https://code.jquery.com/jquery-3.5.1.slim.min.js"</span>
+<span class="na"> integrity</span><span class="o">=</span><span class="n">"sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"</span>
+<span class="na"> crossorigin</span><span class="o">=</span><span class="n">"anoymous"</span><span class="p"><</span><span class="p">/</span><span class="nt">script</span><span class="p">></span>
+<span class="p"><</span><span class="nt">script</span><span class="na"> src</span><span class="o">=</span><span class="n">"https://cdnjs.cloudflare.com/ajax/libs/TableDnD/0.9.1/jquery.tablednd.js"</span>
+<span class="na"> integrity</span><span class="o">=</span><span class="n">"sha256-d3rtug+Hg1GZPB7Y/yTcRixO/wlI78+2m08tosoRn7A="</span>
+<span class="na"> crossorigin</span><span class="o">=</span><span class="n">"anoymous"</span><span class="p"><</span><span class="p">/</span><span class="nt">script</span><span class="p">></span>
+</pre>
+</div>
+
+</div>
+<div class="section" id="api">
 <h2>fr.js Object</h2>
 <p>The fr library base object can be instantiated as</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span><span class="p">();</span>
@@ -110,12 +126,7 @@
 <td><p>label is the name of a row within a table. This method should be used to link tables together that share a row name.</p></td>
 <td><p>This method hyperlinks rows of tables that share the same label to show to compare their values.</p></td>
 </tr>
-<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">checkLinkedValues</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">label, </span><br><span class="n">message</span><span class="p">);</span>
-</pre></div>
-</div></p></td>
-<td><p>label is the name of a row within a table. Message is a string of text. This method is best used as an onload or onchange handler.</p></td>
-<td><p>This method adds the message to rows with the same label if the values differ.</p></td>
-</tr>
+
 <tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">createManualSlideShow</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">root, </span><br><span class="n">selector, </span><span class="n">slides</span><span class="p">);</span>
 </pre></div>
 </div></p></td>
