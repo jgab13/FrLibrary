@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fr library’s documentation! &#8212; fr library  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="fr-library-s-documentation">
+<h1>fr.js API Documentation</h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="api">
+<h2>fr.js Object</h2>
+<p>The fr library base object can be instantiated as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>All methods should be called on this object as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">report</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="o">...</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="methods">
+<h2>Methods</h2>
+<div>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 60%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row"><th class="head"><p>Method Signature</p></th>
+<th class="head"><p>Arguments</p></th>
+<th class="head"><p>Return Values</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">statementGenerator</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">data, </span><br><span class="n">id, </span><span class="n">sub, </span><span class="n">budget, </span><span class="n">edit</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>See the examples page for format of the data. id argument sets table id. subtotal is a boolean to create subtotals for each data category. edit is boolean to set each value in an input form with edit and save buttons. budget must match the data object. See the examples page for precise format. sub, budget and edit are optional.</p></td>
+<td><p>This method returns a financial report table based on user input.</p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">total</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">select, </span><span class="n">label, </span><br><span class="n">operations, </span><span class="n">budget</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>select is the id selector of the table. The label is the name given to the total row. operations must be in a specific format. Can only be add or sub. See examples for format. budget is a boolean. Select true to calculate total on budgeted data. budget is an optional argument.</p></td>
+<td><p>This method calculates totals on a report table based with the label as the title of the row.</p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">editTotal</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">select, </span><span class="n">label, </span><br><span class="n">operations, </span><span class="n">budget</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>editTotal takes the same arguments as total above. It can be used as an onchange handler to recalculate totals after changing a table value.</p></td>
+<td><p>This method recalculates totals on a report table based with the label as the title of the row. </p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">draganddrop</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">select</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>select is the id of the table. </p></td>
+<td><p>This method makes the selected table rows drap and droppable so the user can reorder table rows. </p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formatValues</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">();</span>
+</pre></div>
+</div></p></td>
+<td><p>No arguments are taken for this method. This method is best used as an onload or onchange handler to format the dollar values of each row.</p></td>
+<td><p>This method formats the dollar values or each row and does not return any value.</p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formatDifferences</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">();</span>
+</pre></div>
+</div></p></td>
+<td><p>No arguments are taken for this method. This method is best used as an onload or onchange handler to format valeus</p></td>
+<td><p>This method formats the percentage difference between values for each row and does not return any value.</p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">checkDifferences</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">threshold, </span><br><span class="n">success, </span><span class="n">failure</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>Threshold is a integer value. success and failure are css colors. </p></td>
+<td><p>This method highlights percentage differences greater than the threshold as sucess and lower than the negative threshold as failure. No value is returned.</p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">addLink</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">label</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>label is the name of a row within a table. This method should be used to link tables together that share a row name.</p></td>
+<td><p>This method hyperlinks rows of tables that share the same label to show to compare their values.</p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">checkLinkedValues</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">label, </span><br><span class="n">message</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>label is the name of a row within a table. Message is a string of text. This method is best used as an onload or onchange handler.</p></td>
+<td><p>This method adds the message to rows with the same label if the values differ.</p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">createManualSlideShow</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">root, </span><br><span class="n">selector, </span><span class="n">slides</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>root is the selector that the user attaches a slideshow to. selector is the class name to identify and toggle between slides. slides is an array of tables (which can be generated using statementGenerator).</p></td>
+<td><p>This method creates a manual slideshow of tables which can be toggled using the next and previous buttons.</p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">createAutomaticSlideShow</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><br><span class="n">root, </span><span class="n">selector, </span><span class="n">slides, </span><br><span class="n">speed</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>The arguments for this method are the same as the manual slide show above. The additional speed component is the number of milliseconds before the slideshow transitions to the next slide.</p></td>
+<td><p>This method creates an automatic slideshow of tables that transition between slides at the specified speed.</p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rateCalculator</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">rate, </span><span class="n">label, </span><br><span class="n">table, </span><span class="n">message</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>Rate is a float greater than or equal to 0. label is the name of a row within a table. table is a table (generated by statementGenerator) and message is a string of text.</p></td>
+<td><p>This method adds a calculated row which is calculated based on the rate times the label row value. This will be displayed in the table with the message.</p></td>
+</tr>
+<tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">addSubComponent</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">data, </span><span class="n">label, </span><br><span class="n">cat, </span><span class="n">table</span><span class="p">);</span>
+</pre></div>
+</div></p></td>
+<td><p>data is an object that maps to a row in a table. See examples page for the precise format. label is the name of a row that the data maps to. cat is the category of the label. table is a table (which is generated by statementGenerator.</p></td>
+<td><p>This method adds subrows to a row label in a table.</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <!-- <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">fr library</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div> -->
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Jonathan Gabe.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.0+/dd1615c59</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

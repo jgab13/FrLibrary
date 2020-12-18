@@ -36,6 +36,11 @@ hr {
     border: 1px solid #B1B4B6;
 }
 
+.home{
+    left: 40%;
+    top: 40%;
+}
+
 div.body {
     background-color: #F0FFFF;
     color: #3E4349;
@@ -203,12 +208,51 @@ div.body h6 {
     padding: 0;
 }
 
-div.body h1 { margin-top: 0; padding-top: 0; font-size: 240%; }
+div.body h1 { margin-top: 0; padding-top: 0; font-size: 300%; }
 div.body h2 { font-size: 180%; }
 div.body h3 { font-size: 150%; }
 div.body h4 { font-size: 130%; }
 div.body h5 { font-size: 100%; }
 div.body h6 { font-size: 100%; }
+
+div.body.home {
+    margin-top: 20%;
+    margin-left: 24%;
+}
+
+.links{
+    padding-top: 10px;
+    margin-left: 23%;
+}
+
+.link:hover{
+    background: #FFF;
+}
+
+.link {
+    margin-right: 10px;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    border-radius: 5px;
+    background: #cce6ff;
+}
+
+.link a {
+    text-decoration: none;
+    color: black;
+}
+
+.link a:hover {
+    background: #FFF;
+}
+
+.subs {
+    margin-top: 2%;
+    margin-left: 8%;
+    margin-bottom: 10px;
+    width: 50%;
+    text-align: justify;
+}
 
 a.headerlink {
     color: #DDD;
