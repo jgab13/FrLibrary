@@ -749,8 +749,8 @@
 		        y[i].classList.remove("currSign")
 		    } 
 		},
-		checkDifferences: function(threshold, id, success, failure){
-			const diffsToCheck = document.querySelectorAll("[id*=" + id + "]")
+		checkDifferences: function(threshold,success, failure){
+			const diffsToCheck = document.querySelectorAll("[id*='budgetdiff']")
 			console.log(diffsToCheck)
 		   	for (let i = 0; i < diffsToCheck.length; i++){
 		   		console.log(parseFloat(diffsToCheck[i].innerHTML))
