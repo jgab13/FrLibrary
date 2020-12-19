@@ -2,7 +2,7 @@
 
 ## Landing Page
 
-Please find my landing page here: https://powerful-waters-30511.herokuapp.com/.
+Please find my landing page here: https://frlib.herokuapp.com/.
 
 ## Getting Started
 
@@ -21,4 +21,4 @@ To use this library, download a zip of the library from this repo, then add the 
  
 ## Documentation
 
-Please find documentation for this library here: https://powerful-waters-30511.herokuapp.com/doc.html. 
+Please find documentation for this library here: https://frlib.herokuapp.com/doc.html. 
