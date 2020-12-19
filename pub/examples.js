@@ -43,23 +43,6 @@ const BSdata2 = {
 	}
 }
 
-const BSbudget = {
-	Assets: {
-		"Cash": 200,
-		"Accounts Receivable": 300,
-		"PPE": 290,
-		"Other Assets": 196
-	},
-	Liabilities: {
-		"Accounts Payable": 250,
-		"Long term Debt": 476
-	},
-	Equity: {
-		"Retained Earnings": 200,
-		"Outstanding Shares": 50
-	}
-}
-
 const person = {
 	header: {
 		"statement": "Jonathan's Income Statement",
@@ -77,11 +60,31 @@ const person = {
 	}
 }
 
+const Income = {
+	"Sub Income 1": 50,
+	"Sub Income 2": 50
+}
+
+const personBudget = {
+	Income: {
+		"Income 1": 175,
+		"Income 2": 220,
+		"Income 3": 275,
+		"Income 4": 110
+	},
+	Expenses: {
+		"Expense 1": 300,
+		"Expense 2": 595
+	}
+}
+
+
 
 const f = new fr()
 const fa = new fr()
 const fb = new fr()
 const fc = new fr()
+const fd = new fr()
 
 function createBS(){
 	
@@ -100,17 +103,6 @@ function createBS(){
 		"Liabilities": "add",
 		"Equity": "add"
 	})
-	// f.rateCalculor(0.3, "Long term Debt", table, "Interest to pay")
-	// total("tb1", "Liabilities + Equity", {
-	// 	"Liabilities": "add",
-	// 	"Equity": "add",
-	// })
-	// myBS.generateHeader('#head', 'Balance Sheet')
-	// myBS.generateFormBody('#stmt', true)
-	// myBS.lineItemDetail(addCash, "Cash")
-	// const footer = document.querySelector('#footer')
-	// const text = document.createTextNode('This is the balance statement. This form cannot be editted and is not fillable. The cash row can be collapsed and expanded to see additional cash details')
-	// footer.appendChild(text)
 }
 
 
@@ -118,16 +110,22 @@ function createBS(){
 function createBudget(){
 
 	const table = fa.statementGenerator(person, "tb2", true, null, true)
-	console.log(table)
+	const table2 = fd.statementGenerator(person, "tb3", true, personBudget, true)
 	const stmt = document.querySelector('#stmt2')
+	const stmt2 = document.querySelector('#stmt3')
 	console.log(stmt)
 	stmt.appendChild(table)
+	stmt2.appendChild(table2)
 	fa.total("tb2", "Net Income", {
 		"Income": "add",
 		"Expenses": "sub",
 	})
+	fd.total("tb3", "Net Income", {
+		"Income": "add",
+		"Expenses": "sub",
+	}, true)
 	fa.draganddrop("tb2")
-	// fa.rateCalculor(0.3, "Net Income", table, "Income tax to pay")
+	fd.draganddrop("tb3")
 }
 
 
@@ -135,43 +133,18 @@ function createBudget(){
 function slideshow() {
 
 	const slides = []
-	const slide1 = fb.statementGenerator(person, "tb3", true)
-	const slide2 = fb.statementGenerator(BSdata2, 'tb4', true)
+	const slide1 = fb.statementGenerator(person, "tb5", false)
+	const slide2 = fb.statementGenerator(BSdata2, 'tb6', false)
 	slides.push(slide1)
 	slides.push(slide2)
-	fb.createAutomaticSlideShow('#slideshow', 'auto', slides, 2000)
-}
-
-function ManualSlideShow() {
-	const slides = []
-
-	const slide1 = fc.statementGenerator(person, "tb5", true)
-	const slide2 = fc.statementGenerator(BSdata, 'tb6', true)
-	
-	
-	// total("tb5", "Net Income", {
-	// 	"Income": "add",
-	// 	"Expenses": "sub",
-	// })
-	// addSubComponents(Income, "Income 1", "Income", slide1)
-	slides.push(slide1)
-	slides.push(slide2)
-	fc.createManualSlideShow('#slideshow2', 'manual', slides)
-	fc.rateCalculor(0.3, "Long term Debt", slide2, "Interest to pay")
-	fc.total("tb5", "Net Income", {
-		"Income": "add",
-		"Expenses": "sub",
-	})
-	fc.total("tb6", "Liabilities + Equity", {
-		"Liabilities": "add",
-		"Equity": "add",
-	})
+	// fb.rateCalculor(0.3, "Long term Debt", slide2, "Interest to pay")
+	fb.createAutomaticSlideShow('#slideshow', 'auto', slides, 3000)
 }
 
 function onLoadFunctions() {
 	f.formatValues();
 	f.formatDifferences();
-	f.checkDifferences(10,"#1CAC78", "#fd5c63")
+	f.checkDifferences("tb3", 10,"#1CAC78", "#fd5c63")
 	f.addLink("Total Income");
 	f.addLink("Total Expenses");
 	// f.addLink("Cash");
@@ -183,11 +156,15 @@ function onChangeFunctions() {
 		"Income": "add",
 		"Expenses": "sub",
 	})
+	fd.editTotal("tb3", "Net Income", {
+		"Income": "add",
+		"Expenses": "sub",
+	})
 	// f.editTotal("tb1", "Liabilities + Equity", {
 	// 	"Liabilities": "add",
 	// 	"Equity": "add",
 	// })
-	f.checkDifferences(10,"#1CAC78", "#fd5c63")
+	f.checkDifferences("tb3", 10,"#1CAC78", "#fd5c63")
 	f.formatDifferences();
 }
 
@@ -197,154 +174,10 @@ function onChangeFunctions() {
 window.addEventListener("load", () =>{
 	createBS();
 	createBudget();
-	ManualSlideShow();
-	// slideshow()
+	slideshow()
 	onLoadFunctions();
 })
 
 window.addEventListener("click", () =>{
 	onChangeFunctions();
 })
-
-
-// const header = {
-// 	name: "My Company",
-// 	year: "Dec 31, 2020"
-// }
-
-// const BSdata = {
-// 	assets: {
-// 		"Cash": 100,
-// 		"Accounts Receivable": 200,
-// 		"PPE": 300,
-// 		"Other Assets": 200
-// 	},
-// 	liabilities: {
-// 		"Accounts Payable": 200,
-// 		"Long term Debt": 400
-// 	},
-// 	equity: {
-// 		"Retained Earnings": 100,
-// 		"Outstanding Shares": 100
-// 	}
-// }
-
-// const ISdata = {
-// 	income: {
-// 		"Income 1": 100,
-// 		"Income 2": 200,
-// 		"Income 3": 300,
-// 		"Income 4": 200
-// 	},
-// 	expenses: {
-// 		"Expense 1": 100,
-// 		"Expense 2": 100
-// 	}
-// }
-
-
-// const CFdata = {
-// 	beg: {
-// 		"Beginning Balance": 500
-// 	},
-// 	operations: {
-// 		"Net income": 1000,
-// 		"Depreciation": 5000,
-// 		"Loss on sale": -360
-// 	},
-// 	investing: {
-// 		"Capex": 5500,
-// 		"Losses": -3700
-// 	},
-// 	financing: {
-// 		"Debt payments": -7500,
-// 		"Share issuance": 5000
-// 	},
-// 	end: {
-// 		"Ending Balance": -200
-// 	} 
-// }
-
-// const ESdata = {
-// 	beg: {
-// 		"Beginning Balance": 500
-// 	},
-
-// 	activity: {
-// 		"Earnings": -1000,
-// 		"Share issuance": 200,
-// 		"Loan from shareholder": 100
-// 	},
-// 	end: {
-// 		"Ending Balance": -200
-// 	} 
-// }
-
-// const ESbudget = {
-// 	beg: {
-// 		"Beginning Balance": 300
-// 	},
-
-// 	activity: {
-// 		"Earnings": -800,
-// 		"Share issuance": 150,
-// 		"Loan from shareholder": 75
-// 	},
-// 	end: {
-// 		"Ending Balance": -225
-// 	} 
-// }
-
-// const addCash = {
-// 	Cash: {
-// 		"Deposits": 50,
-// 		"Cash Equivalents": 25,
-// 		"Treasury Bills": 25
-// 	}
-// }
-
-// const myBS = new balanceSheet(header, BSdata);
-// const myIS = new incomeStatement(header, ISdata);
-// const myES = new equityStatement(header, ESdata);
-// const myCF = new cashFlowStatement(header, CFdata);
-
-
-// // const bs = document.querySelector('.btn-group')
-// // log(bs)
-
-// // bs.addEventListener('click', createStatement);
-
-
-// function createBS(){
-// 	myBS.generateHeader('#head', 'Balance Sheet')
-// 	myBS.generateFormBody('#stmt', true)
-// 	myBS.lineItemDetail(addCash, "Cash")
-// 	const footer = document.querySelector('#footer')
-// 	const text = document.createTextNode('This is the balance statement. This form cannot be editted and is not fillable. The cash row can be collapsed and expanded to see additional cash details')
-// 	footer.appendChild(text)
-// }
-
-// function createIS(){
-// 	myIS.generateHeader('#head', 'Income Statement')
-// 	myIS.generateFormBody('#stmt', true, true)
-// 	const footer = document.querySelector('#footer')
-// 	const text = document.createTextNode('This is the income statement. Click on edit to change the value. Click save to change the value and update the subtotal.')
-// 	footer.appendChild(text)
-// }
-
-// function createCF(){
-// 	myCF.generateHeader('#head', 'Cashflow Statement')
-// 	myCF.generateFillableBody('#stmt', true)
-// 	const footer = document.querySelector('#footer')
-// 	const text = document.createTextNode('This is the cash flow statement. This is a default fillable form with the current value as placeholders. Click on edit to change the value. Click save to change the value and update the subtotal.')
-// 	footer.appendChild(text)
-// }
-
-// function createES(){
-// 	myES.generateHeader('#head', 'Statement of Equity')
-// 	myES.generateFormBody('#stmt', false, false)
-// 	myES.addBudgetData(ESbudget)
-// 	const footer = document.querySelector('#footer')
-// 	const text = document.createTextNode('This is the statement of equity. The edit feature is not enabled. Additional budgeted data was added to this report. The difference between budget and actual was computed automatically.')
-// 	footer.appendChild(text)
-// }

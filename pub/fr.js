@@ -719,6 +719,7 @@
 				rows[3].innerText = ((total - totalbudg) / totalbudg) * 100
 			}
 		},
+		//Used JQuery and JQuery tableDnD for this function.
 		draganddrop: function(label){
 			$(document).ready(function() {
 		    // Initialise the table
@@ -749,8 +750,9 @@
 		        y[i].classList.remove("currSign")
 		    } 
 		},
-		checkDifferences: function(threshold,success, failure){
-			const diffsToCheck = document.querySelectorAll("[id*='budgetdiff']")
+		checkDifferences: function(id, threshold,success, failure){
+			const table = document.querySelector('#' + id)
+			const diffsToCheck = table.querySelectorAll("[id*='budgetdiff']")
 			console.log(diffsToCheck)
 		   	for (let i = 0; i < diffsToCheck.length; i++){
 		   		console.log(parseFloat(diffsToCheck[i].innerHTML))
@@ -876,7 +878,7 @@
 		},
 		rateCalculor: function(rate, label, table, message){
 			console.log('#' + label.replace(/ /g,'') + table.getAttribute('id'))
-			const element = document.querySelector('#' + label.replace(/ /g,'') + table.getAttribute('id'))
+			const element = table.querySelector('#' + label.replace(/ /g,'') + table.getAttribute('id'))
 
 			const value = parseInt(element.innerText)
 			const taxes = value * rate
