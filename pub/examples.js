@@ -1,3 +1,4 @@
+//Sample data
 const BSdata = {
 	header: {
 		"company": "My Company",
@@ -78,22 +79,12 @@ const personBudget = {
 	}
 }
 
-
-
 const f = new fr()
-const fa = new fr()
-const fb = new fr()
-const fc = new fr()
-const fd = new fr()
-
 function createBS(){
 	
 	const table = f.statementGenerator(BSdata, "tb1", true)
-	// const table = NotFillableStatement(BSdata, "tb1", true)
 	f.draganddrop("tb1")
-	console.log(table)
 	const stmt = document.querySelector('#stmt')
-	console.log(stmt)
 	stmt.appendChild(table)
 	f.addSubComponents({
 		"Cash Equivalents": 40,
@@ -105,27 +96,24 @@ function createBS(){
 	})
 }
 
-
-
 function createBudget(){
 
-	const table = fa.statementGenerator(person, "tb2", true, null, true)
-	const table2 = fd.statementGenerator(person, "tb3", true, personBudget, true)
+	const table = f.statementGenerator(person, "tb2", true, null, true)
+	const table2 = f.statementGenerator(person, "tb3", true, personBudget, true)
 	const stmt = document.querySelector('#stmt2')
 	const stmt2 = document.querySelector('#stmt3')
-	console.log(stmt)
 	stmt.appendChild(table)
 	stmt2.appendChild(table2)
-	fa.total("tb2", "Net Income", {
+	f.total("tb2", "Net Income", {
 		"Income": "add",
 		"Expenses": "sub",
 	})
-	fd.total("tb3", "Net Income", {
+	f.total("tb3", "Net Income", {
 		"Income": "add",
 		"Expenses": "sub",
 	}, true)
-	fa.draganddrop("tb2")
-	fd.draganddrop("tb3")
+	f.draganddrop("tb2")
+	f.draganddrop("tb3")
 }
 
 
@@ -133,12 +121,11 @@ function createBudget(){
 function slideshow() {
 
 	const slides = []
-	const slide1 = fb.statementGenerator(person, "tb5", false)
-	const slide2 = fb.statementGenerator(BSdata2, 'tb6', false)
+	const slide1 = f.statementGenerator(person, "tb5", false)
+	const slide2 = f.statementGenerator(BSdata2, 'tb6', false)
 	slides.push(slide1)
 	slides.push(slide2)
-	// fb.rateCalculor(0.3, "Long term Debt", slide2, "Interest to pay")
-	fb.createAutomaticSlideShow('#slideshow', 'auto', slides, 3000)
+	f.createAutomaticSlideShow('#slideshow', 'auto', slides, 3000)
 }
 
 function onLoadFunctions() {
@@ -147,29 +134,20 @@ function onLoadFunctions() {
 	f.checkDifferences("tb3", 10,"#1CAC78", "#fd5c63")
 	f.addLink("Total Income");
 	f.addLink("Total Expenses");
-	// f.addLink("Cash");
-	// f.checkLinkedValues("Total Income", "Total income does not match across statements");
 }
 
 function onChangeFunctions() {
-	fa.editTotal("tb2", "Net Income", {
+	f.editTotal("tb2", "Net Income", {
 		"Income": "add",
 		"Expenses": "sub",
 	})
-	fd.editTotal("tb3", "Net Income", {
+	f.editTotal("tb3", "Net Income", {
 		"Income": "add",
 		"Expenses": "sub",
-	})
-	// f.editTotal("tb1", "Liabilities + Equity", {
-	// 	"Liabilities": "add",
-	// 	"Equity": "add",
-	// })
+	}, true)
 	f.checkDifferences("tb3", 10,"#1CAC78", "#fd5c63")
 	f.formatDifferences();
 }
-
-
-
 
 window.addEventListener("load", () =>{
 	createBS();

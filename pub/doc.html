@@ -87,8 +87,8 @@
 <tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">total</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">select, </span><span class="n">label, </span><br><span class="n">operations, </span><span class="n">budget</span><span class="p">);</span>
 </pre></div>
 </div></p></td>
-<td><p>select is the id selector of the table. The label is the name given to the total row. operations must be in a specific format. Can only be add or sub. See examples for format. budget is a boolean. Select true to calculate total on budgeted data. budget is an optional argument.</p></td>
-<td><p>This method calculates totals on a report table based with the label as the title of the row.</p></td>
+<td><p>select is the id selector of the table. The label is the name given to the total row. operations is an object with either add or sub operations. See examples for format. budget is a boolean. Select true to calculate total on budgeted data. budget is an optional argument.</p></td>
+<td><p>This method calculates totals on a report table based on the label as the title of the row.</p></td>
 </tr>
 <tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">editTotal</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">select, </span><span class="n">label, </span><br><span class="n">operations, </span><span class="n">budget</span><span class="p">);</span>
 </pre></div>
@@ -100,13 +100,13 @@
 </pre></div>
 </div></p></td>
 <td><p>select is the id of the table. </p></td>
-<td><p>This method makes the selected table rows drap and droppable so the user can reorder table rows. </p></td>
+<td><p>This method makes the selected table rows draggable and droppable so the user can reorder table rows. </p></td>
 </tr>
 <tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formatValues</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">();</span>
 </pre></div>
 </div></p></td>
 <td><p>No arguments are taken for this method. This method is best used as an onload or onchange handler to format the dollar values of each row.</p></td>
-<td><p>This method formats the dollar values or each row and does not return any value.</p></td>
+<td><p>This method formats the dollar values of each row and does not return any value.</p></td>
 </tr>
 <tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formatDifferences</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">();</span>
 </pre></div>
@@ -123,7 +123,7 @@
 <tr class="row"><td><p><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">addLink</span><!-- <span class="n">report</span> <span class="o">=</span> <span class="n">new</span> <span class="n">fr</span> --><span class="p">(</span><span class="n">label</span><span class="p">);</span>
 </pre></div>
 </div></p></td>
-<td><p>label is the name of a row within a table. This method should be used to link tables together that share a row name.</p></td>
+<td><p>label is the name of a row within a table.</p></td>
 <td><p>This method hyperlinks rows of tables that share the same label to show to compare their values.</p></td>
 </tr>
 
@@ -162,44 +162,6 @@
           
         </div>
       </div>
-      <!-- <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">fr library</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="#">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div> -->
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
         </div>
       </div>
       <div class="clearer"></div>
