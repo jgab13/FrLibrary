@@ -1,4 +1,4 @@
-# js-library-gabejona
+# fr.js Library
 
 ## Landing Page
 
